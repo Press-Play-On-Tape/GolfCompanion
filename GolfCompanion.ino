@@ -88,9 +88,9 @@ void drawbottomgrass()
 
 void drawpopwindow()
 {
-  arduboy.fillRect(0, 26, 128, 15, BLACK);
-  arduboy.drawLine(0, 27, 128, 27, WHITE);
-  arduboy.drawLine(0, 39, 128, 39, WHITE);
+  arduboy.fillRect(0, 24, 128, 19, BLACK);
+  arduboy.drawLine(0, 26, 128, 26, WHITE);
+  arduboy.drawLine(0, 40, 128, 40, WHITE);
 }
 
 void drawHeader()
@@ -152,32 +152,46 @@ void playerNames()
 
   uint8_t charIndex = name.getCharIndex();
 
-  if (arduboy.justPressed(UP_BUTTON))       { name.incChar(charIndex); }
-  if (arduboy.justPressed(DOWN_BUTTON))     { name.decChar(charIndex); }
-  if (arduboy.justPressed(LEFT_BUTTON))     { name.decCharIndex(); } 
-  if (arduboy.justPressed(RIGHT_BUTTON))    { name.incCharIndex(); } 
+  if (arduboy.justPressed(UP_BUTTON))       
+  { 
+    name.incChar(charIndex);
+  }
+  if (arduboy.justPressed(DOWN_BUTTON))
+  { 
+    name.decChar(charIndex);
+  }
+  if (arduboy.justPressed(LEFT_BUTTON))
+  { 
+    name.decCharIndex();
+  } 
+  if (arduboy.justPressed(RIGHT_BUTTON))
+  { 
+    name.incCharIndex();
+  } 
 
-  if (arduboy.justPressed(B_BUTTON))        { 
+  if (arduboy.justPressed(B_BUTTON))
+  { 
 
-    if (playerIndex > 1) {
-
+    if (playerIndex > 1)
+    {
       state = GameState::PlayerNames_Init;
       playerIndex--;
 
     }
-    else {
-
+    else
+    {
       state = GameState::NumberOfHoles;
-
     }
 
   }
 
-  if (arduboy.justPressed(A_BUTTON))        { 
+  if (arduboy.justPressed(A_BUTTON))        
+  { 
     
     name.save(EEPROM_PLAYER_NAMES + ((playerIndex - 1) * (NAME_LENGTH + 1)));
 
-    if (playerIndex < playerNumber) {
+    if (playerIndex < playerNumber) 
+    {
 
       // Enter the next player's name ..
 
@@ -185,7 +199,8 @@ void playerNames()
       playerIndex++;
     
     }
-    else {
+    else 
+    {
 
       state = GameState::NumberOfHoles;
 

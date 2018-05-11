@@ -99,7 +99,7 @@ void Name::incChar(uint8_t idx) {
       _chars[idx] = ASCII_LOWER_A;
       break;
 
-    case ASCII_LOWER_A ... ASCII_LOWER_B:
+    case ASCII_LOWER_A ... ASCII_LOWER_Y:
       _chars[idx]++;
       break;
 
