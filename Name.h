@@ -154,6 +154,7 @@ void Name::clear(uint16_t startingLocation) {
 }
 
 void Name::retrieve(uint16_t startingLocation) {
+Serial.print(startingLocation);
 
   _charIndex = 0;
       
@@ -163,6 +164,7 @@ void Name::retrieve(uint16_t startingLocation) {
 
   }
 
+Serial.println(getString());
 
   // Has it been initialised ?  If not clear it ..
 

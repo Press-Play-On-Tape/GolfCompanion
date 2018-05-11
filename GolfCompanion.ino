@@ -1,17 +1,35 @@
 #include <Arduboy2.h>
+
 #include "Name.h"
+#include "Utils.h"
 #include "Images.h"
  
 Arduboy2 arduboy;
 Sprites sprite;
 Name name;
 
+//Starting location in EEPROM for Players Names
+#define EEPROM_PLAYER_NAMES 150    
+
+// Name 1 ->   EPROM Loc 150 - 153
+// 0 at 154
+// Name 2 ->   EPROM Loc 155 - 158
+// 0 at 159
+// Name 3 ->   EPROM Loc 160 - 163
+// 0 at 164
+// Name 4 ->   EPROM Loc 165 - 168
+// 0 at 169
+
+
+
+
 //globals
 uint8_t fadeWidth;
-uint8_t state = 0;
+GameState state = GameState::VSBoot;
 uint16_t backdropx = 0;
 uint16_t backdropy = 0;
 uint8_t playerNumber = 1;
+uint8_t playerIndex = 1;    // used to control which player we are entering
 uint8_t holeNumber = 1;
 uint8_t parHole1 = 1;
 
@@ -113,7 +131,7 @@ void numberPlayers()
   }
   else if (arduboy.justPressed(A_BUTTON))
   {
-   state = 3; 
+   state = state = GameState::PlayerNames_Init;  
   }
 }
 
@@ -123,8 +141,12 @@ void playerNames()
   drawbottomgrass();
   drawHeader();
   drawpopwindow();
+
   arduboy.setCursor(6, 30);
-  arduboy.print("Player 1 name? ");
+  arduboy.print(F("Player "));
+  arduboy.print(playerIndex);
+  arduboy.print(F(" name? "));
+
   for (uint8_t x = 0; x < NAME_LENGTH; x++)
   {
 
@@ -149,8 +171,41 @@ void playerNames()
   if (arduboy.justPressed(LEFT_BUTTON))     { name.decCharIndex(); } 
   if (arduboy.justPressed(RIGHT_BUTTON))    { name.incCharIndex(); } 
 
-  if (arduboy.justPressed(A_BUTTON))        { name.save(123); state = 4; }
+  if (arduboy.justPressed(B_BUTTON))        { 
 
+    if (playerIndex > 1) {
+
+      state = GameState::PlayerNames_Init;
+      playerIndex--;
+
+    }
+    else {
+
+      state = GameState::NumberOfHoles;
+
+    }
+
+  }
+
+  if (arduboy.justPressed(A_BUTTON))        { 
+    
+    name.save(EEPROM_PLAYER_NAMES + ((playerIndex - 1) * (NAME_LENGTH + 1)));
+
+    if (playerIndex < playerNumber) {
+
+      // Enter the next player's name ..
+
+      state = GameState::PlayerNames_Init;
+      playerIndex++;
+    
+    }
+    else {
+
+      state = GameState::NumberOfHoles;
+
+    }
+    
+  }
 
 }
 
@@ -173,7 +228,7 @@ void numberHoles()
   }
   else if (arduboy.justPressed(A_BUTTON))
   {
-   state = 5; 
+   state = GameState::ParHoles; 
   }
 }
 
@@ -199,7 +254,7 @@ void parHoles()
   }
   else if (arduboy.justPressed(A_BUTTON))
   {
-   state = 5; 
+   state = GameState::ParHoles; 
   }
 }
 
@@ -217,6 +272,7 @@ void scrollingBackground()
   }
 }
 
+
 void loop()
 {
   if (!(arduboy.nextFrame()))
@@ -229,35 +285,39 @@ void loop()
     switch (state)
     {
 
-    case 0:
+    case GameState::VSBoot:
       vsBoot();
       break;
 
-    case 1:
+    case GameState::SplashScreen:
       splashScreen();
       break;
 
-    case 2:
+    case GameState::NumberOfPlayers:
       numberPlayers();
       break;
 
-    case 3:
+    case GameState::PlayerNames_Init:
+      state = GameState::PlayerNames;
+      name.retrieve(EEPROM_PLAYER_NAMES + ((playerIndex - 1) * (NAME_LENGTH + 1)));
+
+    case GameState::PlayerNames:
       playerNames();
       break;
 
-    case 4:
+    case GameState::NumberOfHoles:
       numberHoles();
       break;
 
-    case 5:
+    case GameState::ParHoles:
       parHoles();
       break;
 
-    case 6:
+    case GameState::InGame:
       ingame();
       break;
 
-    case 7:
+    case GameState::FinalScore:
       finalScoreDisplay();
       break;
       
@@ -270,11 +330,12 @@ void vsBoot()
 {
   // Vsoft logo display
   arduboy.drawBitmap(0, 0, bootlogo, 128, 64, WHITE);
+
   if(fadeOut())
   {
     resetFade();
     resetFadeIn();
-    state = 1;
+    state = GameState::SplashScreen;
   }
 }
 
@@ -288,7 +349,7 @@ void splashScreen()
   // If 'A' button is pressed move to gameplay
   if (arduboy.justPressed(A_BUTTON))
   {
-    state = 2; 
+    state = GameState::NumberOfPlayers; 
     resetFadeIn();
   }
 }
