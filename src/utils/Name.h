@@ -3,8 +3,8 @@
 #include <Arduboy2.h>
 
 #define NAME_LENGTH 4
-#define NAME_CHARACTER_SPACING 7
-#define NAME_UNDERLINE_WIDTH 5
+#define NAME_CHARACTER_SPACING 6
+#define NAME_UNDERLINE_WIDTH 4
 
 #define ASCII_SPACE 32
 #define ASCII_CAPITAL_A 65
@@ -99,7 +99,7 @@ void Name::incChar(uint8_t idx) {
       _chars[idx] = ASCII_LOWER_A;
       break;
 
-    case ASCII_LOWER_A ... ASCII_LOWER_B:
+    case ASCII_LOWER_A ... ASCII_LOWER_Y:
       _chars[idx]++;
       break;
 
@@ -154,7 +154,6 @@ void Name::clear(uint16_t startingLocation) {
 }
 
 void Name::retrieve(uint16_t startingLocation) {
-Serial.print(startingLocation);
 
   _charIndex = 0;
       
@@ -163,8 +162,6 @@ Serial.print(startingLocation);
     _chars[x] = EEPROM.read(startingLocation + x);
 
   }
-
-Serial.println(getString());
 
   // Has it been initialised ?  If not clear it ..
 
@@ -186,7 +183,7 @@ void Name::save(uint16_t startingLocation) {
 }
 
 char* Name::getString() {
-
+//Serial.println(_chars);
   return _chars;
 
 }
