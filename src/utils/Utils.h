@@ -17,6 +17,21 @@
 
 
 
+enum class GameState : uint8_t {
+
+  VSBoot,
+  SplashScreen,
+  NumberOfPlayers,
+  PlayerNames_Init,
+  PlayerNames,
+  NumberOfHoles,
+//  ParHoles,
+  InGame_Init,
+  InGame,
+  FinalScore
+
+};
+
 struct Hole {
 
   uint8_t par = 4;
@@ -56,6 +71,8 @@ struct Hole {
 
 struct Game {
 
+  GameState state = GameState::VSBoot;
+
   uint8_t numberOfHoles = 18;
   uint8_t currentHoleNumber = 3;
 
@@ -66,21 +83,5 @@ struct Game {
 
   Hole holes[18];
   Hole total;
-
-};
-
-
-enum class GameState : uint8_t {
-
-  VSBoot,
-  SplashScreen,
-  NumberOfPlayers,
-  PlayerNames_Init,
-  PlayerNames,
-  NumberOfHoles,
-//  ParHoles,
-  InGame_Init,
-  InGame,
-  FinalScore
 
 };
