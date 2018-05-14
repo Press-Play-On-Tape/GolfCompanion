@@ -10,6 +10,7 @@
 
 #define CHAR_EXCLAMATION 33
 #define CHAR_PERIOD 46
+#define CHAR_QUESTION_MARK 63
 #define CHAR_LETTER_A 65
 #define CHAR_LETTER_Z 90
 #define CHAR_LETTER_A_LOWER 97
@@ -20,10 +21,12 @@
 #ifdef USE_LOWER_CASE
   #define FONT_EXCLAMATION_INDEX 62
   #define FONT_PERIOD_INDEX 63
+  #define FONT_QUESTION_INDEX 64
   #define FONT_NUMBER_INDEX 52
 #else
   #define FONT_EXCLAMATION_INDEX 36
   #define FONT_PERIOD_INDEX 37
+  #define FONT_QUESTION_INDEX 38
   #define FONT_NUMBER_INDEX 26
 #endif
 
@@ -95,6 +98,7 @@ const uint8_t PROGMEM font_images[] = {
 0x06,	0x29,	0x29,	0x1E,	//9
 0x00,	0x2F,	0x00,	0x00,	//! 
 0x00,	0x20,	0x00,	0x00, //.
+0x02, 0x29, 0x05, 0x02, //?
 };
 
 
@@ -149,6 +153,10 @@ void Font4x6::printChar(const char c, const int8_t x, int8_t y) {
       
     case CHAR_PERIOD:
       idx = FONT_PERIOD_INDEX;
+      break;
+      
+    case CHAR_QUESTION_MARK:
+      idx = FONT_QUESTION_INDEX;
       break;
 
   }

@@ -29,75 +29,70 @@ void setup() {
   name.retrieve(123);
 }
 
-void resetFade()
-{
+void resetFade() {
   fadeWidth = 0;
 }
 
 // Resets the fade in effect
-void resetFadeIn()
-{
+void resetFadeIn() {
   fadeWidth = WIDTH;
 }
 
 // fade in function
-bool fadeIn()
-{
-  for(uint8_t i = 0; i < (HEIGHT / 2); ++i)
-  {
+bool fadeIn() {
+
+  for (uint8_t i = 0; i < (HEIGHT / 2); ++i){
     arduboy.drawFastHLine(0, (i * 2), fadeWidth, BLACK);
     arduboy.drawFastHLine((WIDTH - fadeWidth), (i * 2) + 1, fadeWidth, BLACK);
   }
 
   // If fade isn't complete, decrease the counter
-  if(fadeWidth > 0)
-  {
+  if (fadeWidth > 0) {
     fadeWidth = fadeWidth - 4;
     return false;
   }
-  else
+  else {
     return true;
+  }
+
 }
 
 // fade out function
-bool fadeOut()
-{
-  for(uint8_t i = 0; i < (HEIGHT / 2); ++i)
-  {
+bool fadeOut() {
+
+  for (uint8_t i = 0; i < (HEIGHT / 2); ++i) {
     arduboy.drawFastHLine(0, (i * 2), fadeWidth, BLACK);
     arduboy.drawFastHLine((WIDTH - fadeWidth), (i * 2) + 1, fadeWidth, BLACK);
   }
+
   // If fade isn't complete, increase the counter
-  if(fadeWidth < WIDTH)
-  {
+  if(fadeWidth < WIDTH) {
     ++fadeWidth;
     ++fadeWidth;
     return false;
   }
-  else
+  else {
     return true;
+  }
   
 }
 
-void drawbottomgrass()
-{
+void drawbottomgrass() {
   sprite.drawExternalMask(0, 46, grasstee, grassteemask, 0, 0);
 }
 
-void drawpopwindow()
-{
+void drawpopwindow() {
   arduboy.fillRect(0, 26, 128, 15, BLACK);
   arduboy.drawLine(0, 27, 128, 27, WHITE);
   arduboy.drawLine(0, 39, 128, 39, WHITE);
 }
 
-void drawHeader()
-{
-    sprite.drawExternalMask(15, 2, GolfCompanionHeader, GolfCompanionHeadermask, 0,0);
+void drawHeader() {
+  sprite.drawExternalMask(15, 2, GolfCompanionHeader, GolfCompanionHeadermask, 0,0);
 }
 
-void numberPlayers()
-{
+void numberPlayers() {
+
   scrollingBackground();
   drawbottomgrass();
   drawHeader();
@@ -105,22 +100,16 @@ void numberPlayers()
   font4x6.setCursor(6, 29);
   font4x6.print("How many players? ");
   font4x6.println(playerNumber);
-  if (arduboy.justPressed(UP_BUTTON) && playerNumber < 4)
-  {
-    ++playerNumber;
-  }
-  else if (arduboy.justPressed(DOWN_BUTTON)&& playerNumber > 1)
-  {
-    --playerNumber;
-  }
-  else if (arduboy.justPressed(A_BUTTON))
-  {
-   game.state = GameState::PlayerNames_Init;  
-  }
+
+  if (arduboy.justPressed(UP_BUTTON) && playerNumber < 4)         { ++playerNumber; }
+  else if (arduboy.justPressed(DOWN_BUTTON)&& playerNumber > 1)   { --playerNumber; }
+  else if (arduboy.justPressed(A_BUTTON))                         { game.state = GameState::PlayerNames_Init; }
+  else if (arduboy.justPressed(B_BUTTON))                         { game.state = GameState::SplashScreen; }
+
 }
 
-void playerNames()
-{
+void playerNames() {
+
   scrollingBackground();
   drawbottomgrass();
   drawHeader();
@@ -165,7 +154,7 @@ void playerNames()
     }
     else {
 
-      game.state = GameState::NumberOfHoles;
+      game.state = GameState::NumberOfPlayers;
 
     }
 
@@ -193,8 +182,8 @@ void playerNames()
 
 }
 
-void numberHoles()
-{
+void numberHoles() {
+
   scrollingBackground();
   drawbottomgrass();
   drawHeader();
@@ -202,18 +191,12 @@ void numberHoles()
   font4x6.setCursor(6, 29);
   font4x6.print("How many Holes? ");
   font4x6.println(game.numberOfHoles);
-  if (arduboy.justPressed(UP_BUTTON)&& game.numberOfHoles < 18)
-  {
-    ++game.numberOfHoles;
-  }
-  else if (arduboy.justPressed(DOWN_BUTTON)&& game.numberOfHoles > 1)
-  {
-    --game.numberOfHoles;
-  }
-  else if (arduboy.justPressed(A_BUTTON))
-  {
-   game.state = GameState::InGame_Init; 
-  }
+
+  if (arduboy.justPressed(UP_BUTTON)&& game.numberOfHoles < 18)         { ++game.numberOfHoles; }
+  else if (arduboy.justPressed(DOWN_BUTTON)&& game.numberOfHoles > 1)   { --game.numberOfHoles; }
+  else if (arduboy.justPressed(A_BUTTON))                               { game.state = GameState::InGame_Init; }
+  else if (arduboy.justPressed(B_BUTTON))                               { game.state = GameState::PlayerNames_Init; }
+
 }
 
 // void parHoles()
@@ -242,18 +225,20 @@ void numberHoles()
 //   }
 // }
 
-void scrollingBackground()
-{
+void scrollingBackground() {
+
   arduboy.drawBitmap(backdropx, backdropy, GolfBackground, 128, 64, WHITE);
   arduboy.drawBitmap(backdropx + 128, backdropy, GolfBackground, 128, 64, WHITE);
-  if(arduboy.everyXFrames(5)) // when running at 60fps
-  {
+
+  if(arduboy.everyXFrames(5)) { // when running at 60fps
+
     --backdropx;
-      if( backdropx < -128 )
-  {
-    backdropx = 0;
+    if (backdropx < -128){
+      backdropx = 0;
+    }
+  
   }
-  }
+
 }
 
 
@@ -324,19 +309,19 @@ void vsBoot()
   }
 }
 
-void splashScreen()
-{
+void splashScreen() {
+
   scrollingBackground();
   drawbottomgrass();
   sprite.drawExternalMask(30, 24, GolfCompanionSplash, GolfCompanionSplashmask, 0,0);
   fadeIn();
 
   // If 'A' button is pressed move to gameplay
-  if (arduboy.justPressed(A_BUTTON))
-  {
+  if (arduboy.justPressed(A_BUTTON)) {
     game.state = GameState::NumberOfPlayers; 
     resetFadeIn();
   }
+
 }
 
 uint8_t cursorX = 0;
@@ -383,15 +368,15 @@ void ingame()
 */
 
   arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y - 2, 2);
-  // arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (1 * GRID_VERT_SPACING) - 2, 2);
-  // arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (2 * GRID_VERT_SPACING) - 2, 2);
-  // arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (3 * GRID_VERT_SPACING) - 2, 2);
-  // arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (4 * GRID_VERT_SPACING) - 2, 2);
+  arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (1 * GRID_VERT_SPACING) - 2, 2);
+  arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (2 * GRID_VERT_SPACING) - 2, 2);
+  arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (3 * GRID_VERT_SPACING) - 2, 2);
+  arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (4 * GRID_VERT_SPACING) - 2, 2);
 
-  // arduboy.drawVerticalDottedLine(0, HEIGHT, GRID_HOLE_1_X, 2);
-  // arduboy.drawVerticalDottedLine(0, HEIGHT, GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING), 2);
-  // arduboy.drawVerticalDottedLine(0, HEIGHT, GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING), 2);
-  // arduboy.drawVerticalDottedLine(0, HEIGHT, GRID_HOLE_1_X + (3 * GRID_HORZ_SPACING), 2);
+  arduboy.drawVerticalDottedLine(0, HEIGHT, GRID_HOLE_1_X, 2);
+  arduboy.drawVerticalDottedLine(0, HEIGHT, GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING), 2);
+  arduboy.drawVerticalDottedLine(0, HEIGHT, GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING), 2);
+  arduboy.drawVerticalDottedLine(0, HEIGHT, GRID_HOLE_1_X + (3 * GRID_HORZ_SPACING), 2);
 
   font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, 0);
   font4x6.print(game.currentHoleNumber - 2);
@@ -534,12 +519,8 @@ void ingame()
 
   }
 
-
-  // Handle keypress
-
 }
 
-void finalScoreDisplay()
-{
+void finalScoreDisplay() {
   font4x6.print("Here are the final scores");
 }
