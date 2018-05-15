@@ -389,7 +389,7 @@ void splashScreen()
 
   scrollingBackground();
   drawBottomGrass();
-  sprite.drawExternalMask(30, 24, GolfCompanionSplash, GolfCompanionSplashmask, 0,0);
+  sprite.drawExternalMask(0, 0, signTitle, signTitleMask, 0,0);
   fadeIn();
 
   // If 'A' button is pressed move to gameplay
