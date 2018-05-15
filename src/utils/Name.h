@@ -21,7 +21,9 @@ class Name {
 
   public: 
 
-    Name() {};
+    Name() {
+      for (uint8_t x=0; x < NAME_LENGTH; x++) _chars[x] = ' ';
+    };
   
 
     // Properties ..
@@ -30,6 +32,7 @@ class Name {
     char getChar(uint8_t idx);
     void setCharIndex(uint8_t val);
     void setChar(uint8_t idx, uint8_t val);
+    void setChars(char val[NAME_LENGTH]);
 
 
     // Methods ..
@@ -38,6 +41,7 @@ class Name {
     void decCharIndex();
     void incChar(uint8_t idx);
     void decChar(uint8_t idx);
+    void clear();
     void clear(uint16_t startingLocation);
     void retrieve(uint16_t startingLocation);
     void save(uint16_t startingLocation);
@@ -46,7 +50,7 @@ class Name {
   private:
    
     uint8_t _charIndex;
-    uint8_t _chars[NAME_LENGTH];
+    char _chars[NAME_LENGTH];
     uint16_t _eeprom_start;
 
 };
@@ -69,6 +73,11 @@ void Name::setCharIndex(uint8_t val) {
 
 void Name::setChar(uint8_t idx, uint8_t val) {
   _chars[idx] = val;
+}
+
+void Name::setChars(char val[NAME_LENGTH]) {
+  _charIndex = 0;
+  memcpy(_chars, val, 4);
 }
 
 
@@ -139,6 +148,18 @@ void Name::decChar(uint8_t idx) {
 
 }
 
+void Name::clear() {
+
+  _charIndex = 0;
+      
+  for (uint8_t x = 0; x < NAME_LENGTH; x++) {
+    
+    _chars[x] = ASCII_SPACE;
+
+  }
+
+}
+
 void Name::clear(uint16_t startingLocation) {
 
   _charIndex = 0;
@@ -183,7 +204,6 @@ void Name::save(uint16_t startingLocation) {
 }
 
 char* Name::getString() {
-//Serial.println(_chars);
   return _chars;
 
 }
