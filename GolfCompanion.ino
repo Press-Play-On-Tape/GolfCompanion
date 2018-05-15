@@ -77,17 +77,20 @@ bool fadeOut() {
   
 }
 
-void drawBottomGrass() {
+void drawBottomGrass()
+{
   sprite.drawExternalMask(0, 46, grasstee, grassteemask, 0, 0);
 }
 
-void drawPopWindow() {
-  arduboy.fillRect(0, 26, 128, 15, BLACK);
-  arduboy.drawLine(0, 27, 128, 27, WHITE);
-  arduboy.drawLine(0, 39, 128, 39, WHITE);
+void drawPopWindow()
+{
+  arduboy.fillRect(0, 24, 128, 18, BLACK);
+  arduboy.drawLine(0, 25, 128, 25, WHITE);
+  arduboy.drawLine(0, 40, 128, 40, WHITE);
 }
 
-void drawHeader() {
+void drawHeader()
+{
   sprite.drawExternalMask(15, 2, GolfCompanionHeader, GolfCompanionHeadermask, 0,0);
 }
 
@@ -216,15 +219,18 @@ void numberHoles() {
 
 }
 
-void scrollingBackground() {
+void scrollingBackground()
+{
 
   arduboy.drawBitmap(backdropx, backdropy, GolfBackground, 128, 64, WHITE);
   arduboy.drawBitmap(backdropx + 128, backdropy, GolfBackground, 128, 64, WHITE);
 
-  if(arduboy.everyXFrames(5)) { // when running at 60fps
+  if(arduboy.everyXFrames(5))
+  { // when running at 60fps
 
     --backdropx;
-    if (backdropx < -128){
+    if (backdropx < -128)
+    {
       backdropx = 0;
     }
   
@@ -232,7 +238,8 @@ void scrollingBackground() {
 
 }
 
-void loop() {
+void loop()
+{
 
   if (!arduboy.nextFrame()) return;
 
@@ -240,7 +247,8 @@ void loop() {
   arduboy.pollButtons();
   arduboy.clear();
 
-  switch (game.getState()) {
+  switch (game.getState())
+  {
 
     case GameState::VSBoot:
       vsBoot();
@@ -258,7 +266,8 @@ void loop() {
     
       game.setState(GameState::PlayerNames);
 
-      switch (game.playerBeingEdited) {
+      switch (game.playerBeingEdited)
+      {
 
         case 1:
           name.setChars(game.name1);
@@ -332,12 +341,7 @@ void splashScreen() {
 
 void inGame() {
 
-  font4x6.setCursor(0, 0);
-  font4x6.print(F("Hole"));
-  font4x6.setCursor(100, 0);
-  font4x6.print(F("Total"));
-  font4x6.setCursor(0, 11);
-  font4x6.print(F("Par"));
+  arduboy.drawBitmap(0, 0, scorecard, 128, 64, WHITE);
 
   font4x6.setCursor(1, GRID_PAR_Y + (1 * GRID_VERT_SPACING));
   font4x6.print(game.name1);
@@ -359,27 +363,19 @@ void inGame() {
   font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, 0);
   font4x6.print(game.currentHoleNumber);
 
-//  font4x6.setTextColor(BLACK);
+  font4x6.setTextColor(BLACK);
   font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, GRID_PAR_Y);
   font4x6.print(game.holes[game.currentHoleNumber - 3].par);
   font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y);
   font4x6.print(game.holes[game.currentHoleNumber - 2].par);
   font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y);
   font4x6.print(game.holes[game.currentHoleNumber - 1].par);  
-
-
-  // Vertical lines ..
-
-  arduboy.drawVerticalDottedLine(0, HEIGHT - (GRID_VERT_SPACING * (4 - game.numberOfPlayers)), GRID_HOLE_1_X, 2);
-  arduboy.drawVerticalDottedLine(0, HEIGHT - (GRID_VERT_SPACING * (4 - game.numberOfPlayers)), GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING), 2);
-  arduboy.drawVerticalDottedLine(0, HEIGHT - (GRID_VERT_SPACING * (4 - game.numberOfPlayers)), GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING), 2);  
-  arduboy.drawVerticalDottedLine(0, HEIGHT - (GRID_VERT_SPACING * (4 - game.numberOfPlayers)), GRID_HOLE_1_X + (3 * GRID_HORZ_SPACING), 2);  
+  font4x6.setTextColor(WHITE); 
 
 
   // Player 1
 
-  arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (1 * GRID_VERT_SPACING) - 2, 2);
-  arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (2 * GRID_VERT_SPACING) - 2, 2);
+
   font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, GRID_PAR_Y + (1 * GRID_VERT_SPACING));
   font4x6.print(game.holes[game.currentHoleNumber - 3].player1Score);
   font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (1 * GRID_VERT_SPACING));
@@ -391,8 +387,8 @@ void inGame() {
 
 
   //Player 2
-  if (game.numberOfPlayers >= 2) {
-    arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (3 * GRID_VERT_SPACING) - 2, 2);
+  if (game.numberOfPlayers >= 2) 
+  {
     font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, GRID_PAR_Y + (2 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 3].player2Score);
     font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (2 * GRID_VERT_SPACING));
@@ -404,8 +400,8 @@ void inGame() {
   }
 
   // Player 3
-  if (game.numberOfPlayers >= 3) {
-    arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y + (4 * GRID_VERT_SPACING) - 2, 2);
+  if (game.numberOfPlayers >= 3) 
+  {
     font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, GRID_PAR_Y + (3 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 3].player3Score);
     font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (3 * GRID_VERT_SPACING));
@@ -418,7 +414,8 @@ void inGame() {
 
 
   // Player 4
-  if (game.numberOfPlayers == 4) {    
+  if (game.numberOfPlayers == 4)
+  {    
     font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, GRID_PAR_Y + (4 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 3].player4Score);
     font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (4 * GRID_VERT_SPACING));
