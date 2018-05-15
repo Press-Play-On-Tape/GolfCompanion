@@ -82,9 +82,9 @@ void drawbottomgrass() {
 }
 
 void drawpopwindow() {
-  arduboy.fillRect(0, 26, 128, 15, BLACK);
-  arduboy.drawLine(0, 27, 128, 27, WHITE);
-  arduboy.drawLine(0, 39, 128, 39, WHITE);
+  arduboy.fillRect(0, 24, 128, 18, BLACK);
+  arduboy.drawLine(0, 25, 128, 25, WHITE);
+  arduboy.drawLine(0, 40, 128, 40, WHITE);
 }
 
 void drawHeader() {
