@@ -15,6 +15,12 @@
 // 0 at 169
 
 
+#define GRID_VERT_SPACING 11
+#define GRID_HORZ_SPACING 16
+#define GRID_HOLE_1_X 40
+#define GRID_TOTAL_X 100
+#define GRID_PAR_Y 11
+#define GRID_CELL_SPACING 4
 
 
 enum class GameState : uint8_t {
@@ -25,7 +31,6 @@ enum class GameState : uint8_t {
   PlayerNames_Init,
   PlayerNames,
   NumberOfHoles,
-//  ParHoles,
   InGame_Init,
   InGame,
   FinalScore
@@ -34,8 +39,7 @@ enum class GameState : uint8_t {
 
 struct Hole {
 
-  uint8_t par = 4;
-  
+  uint8_t par = 4;  
   uint8_t player1Score;
   uint8_t player2Score;
   uint8_t player3Score;
@@ -69,19 +73,10 @@ struct Hole {
 
 };
 
-struct Game {
-
-  GameState state = GameState::VSBoot;
-
-  uint8_t numberOfHoles = 18;
-  uint8_t currentHoleNumber = 3;
-
-  char name1[NAME_LENGTH + 1];
-  char name2[NAME_LENGTH + 1];
-  char name3[NAME_LENGTH + 1];
-  char name4[NAME_LENGTH + 1];
-
-  Hole holes[18];
-  Hole total;
+struct Cursor {
+ 
+  uint8_t x = 0;
+  uint8_t y = 0;
+  uint8_t mode = 0;  
 
 };
