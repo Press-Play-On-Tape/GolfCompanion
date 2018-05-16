@@ -554,18 +554,26 @@ void inGame()
         arduboy.drawRect(GRID_HOLE_1_X + (game.cursor.x * GRID_HORZ_SPACING) + 1, GRID_PAR_Y + (1 * GRID_VERT_SPACING) + ((game.cursor.y - 1) * GRID_VERT_SPACING) - 1, (GRID_HORZ_SPACING - 1), (GRID_VERT_SPACING - 1), WHITE );
       }
 
-      if (arduboy.justPressed(UP_BUTTON) && game.cursor.y > 0) game.cursor.y--;
-      if (arduboy.justPressed(DOWN_BUTTON) && game.cursor.y < game.numberOfPlayers) game.cursor.y++;
+      if (arduboy.justPressed(UP_BUTTON) && game.cursor.y > 0) {
+        game.cursor.y--;
+        game.saveEEPROM();
+      }
 
-      if (arduboy.justPressed(LEFT_BUTTON))
-      {
+      if (arduboy.justPressed(DOWN_BUTTON) && game.cursor.y < game.numberOfPlayers) {
+        game.cursor.y++;
+        game.saveEEPROM();
+      }
+
+      if (arduboy.justPressed(LEFT_BUTTON)) {
         if (game.cursor.x > 0) {
           game.cursor.x--;
+          game.saveEEPROM();
         }
         else
         {
           if (game.currentHoleNumber > 3) {
             game.currentHoleNumber--;
+            game.saveEEPROM();
           }
           else
           {
@@ -579,12 +587,14 @@ void inGame()
       {
         if (game.cursor.x < 2) {
           game.cursor.x++;
+          game.saveEEPROM();
         }
         else
         {
           if (game.currentHoleNumber < game.numberOfHoles)
           {
             game.currentHoleNumber++;
+            game.saveEEPROM();
           }
           else
           {
@@ -593,7 +603,10 @@ void inGame()
         }
       }
 
-      if (arduboy.justPressed(A_BUTTON)) game.cursor.mode = 1;
+      if (arduboy.justPressed(A_BUTTON)) {
+        game.cursor.mode = 1;
+        game.saveEEPROM();
+      }
 
       break;
 
@@ -618,6 +631,7 @@ void inGame()
 
         uint8_t par = game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par;
         if (par <= 9) game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par++;
+        game.saveEEPROM();
 
       }
 
@@ -626,6 +640,7 @@ void inGame()
 
         uint8_t par = game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par;
         if (par > 1) game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par--;
+        game.saveEEPROM();
 
       }
 
@@ -643,6 +658,7 @@ void inGame()
 
           game.holes[game.currentHoleNumber - (3 - game.cursor.x)].setPlayerScore(game.cursor.y, playerScore + 1);
           game.total.setPlayerScore(game.cursor.y, totalScore + 1);
+          game.saveEEPROM();
 
         }
 
@@ -659,12 +675,16 @@ void inGame()
           
           game.holes[game.currentHoleNumber - (3 - game.cursor.x)].setPlayerScore(game.cursor.y, playerScore - 1);
           game.total.setPlayerScore(game.cursor.y, totalScore - 1);
+          game.saveEEPROM();
 
         }
 
       }
 
-      if (arduboy.justPressed(A_BUTTON)) game.cursor.mode = 0;
+      if (arduboy.justPressed(A_BUTTON)) {
+        game.cursor.mode = 0;
+        game.saveEEPROM();
+      }
 
       break;
 
