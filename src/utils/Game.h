@@ -53,6 +53,8 @@ struct Game {
   private:
 
     GameState _state = GameState::VSBoot;
+    uint8_t order[4] = { 1, 2, 3, 4 };
+
 
 
   //--------------------------------------------------------------------------------------------------------------------------
@@ -213,10 +215,8 @@ struct Game {
 
     }
 
-    void clear() {
+    void clear(bool clearNames) {
 
-      numberOfPlayers = 1;
-      playerBeingEdited = 1; 
       numberOfHoles = 18;
       currentHoleNumber = 3;
       cursor.x = 0;
@@ -237,11 +237,75 @@ struct Game {
       total.player3Score = 0;
       total.player4Score = 0;
 
-      for (uint8_t x = 0; x < NAME_LENGTH; x++) {
-        name1[x] = ' ';
-        name2[x] = ' ';
-        name3[x] = ' ';
-        name4[x] = ' ';
+      if (clearNames) {
+
+        numberOfPlayers = 1;
+        playerBeingEdited = 1; 
+
+        for (uint8_t x = 0; x < NAME_LENGTH; x++) {
+          name1[x] = ' ';
+          name2[x] = ' ';
+          name3[x] = ' ';
+          name4[x] = ' ';
+        }
+
+      }
+
+    }
+
+    uint8_t getOrder(uint8_t position) {
+      return order[position - 1];
+    }
+
+    uint8_t getScore(uint8_t playerNo) {
+
+      switch (playerNo) {
+
+        case 1:   return total.player1Score;
+        case 2:   return total.player2Score;
+        case 3:   return total.player3Score;
+        case 4:   return total.player4Score;
+        default:  return 0;
+
+      }
+
+    }
+
+    char* getName(uint8_t playerNo) {
+
+      switch (playerNo) {
+
+        case 1:   return name1;
+        case 2:   return name2;
+        case 3:   return name3;
+        case 4:   return name4;
+        default:  return name1;
+
+      }
+
+    }
+
+    void determineWinners() {
+
+      for (uint8_t x = 0 ; x < 4; x++) {
+        order[x] = x + 1;
+      }
+
+      uint8_t swap;
+      uint8_t n = numberOfPlayers;
+
+      for (uint8_t c = 0 ; c < ( n - 1 ); c++) {
+      
+        for (uint8_t d = 0 ; d < n - c - 1; d++) {
+      
+          if (getScore(order[d]) > getScore(order[d+1])) {
+            swap       = order[d];
+            order[d]   = order[d+1];
+            order[d+1] = swap;
+          }
+      
+        }
+      
       }
 
     }

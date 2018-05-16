@@ -2,9 +2,9 @@
 
 #include <Arduboy2.h>
 
-#define NAME_LENGTH 4
+#define NAME_LENGTH 6
 #define NAME_CHARACTER_SPACING 6
-#define NAME_UNDERLINE_WIDTH 4
+#define NAME_UNDERLINE_WIDTH 3
 
 #define ASCII_SPACE 32
 #define ASCII_CAPITAL_A 65

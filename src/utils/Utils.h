@@ -2,26 +2,20 @@
 
 #include <Arduboy2.h>
 
-//Starting location in EEPROM for Players Names
-#define EEPROM_PLAYER_NAMES 150    
-
-// Name 1 ->   EPROM Loc 150 - 153
-// 0 at 154
-// Name 2 ->   EPROM Loc 155 - 158
-// 0 at 159
-// Name 3 ->   EPROM Loc 160 - 163
-// 0 at 164
-// Name 4 ->   EPROM Loc 165 - 168
-// 0 at 169
-
-
+#define HALF_CHARACTER 2
 #define GRID_VERT_SPACING 11
 #define GRID_HORZ_SPACING 16
 #define GRID_HOLE_1_X 40
-#define GRID_TOTAL_X 100
+#define GRID_TOTAL_X 110
 #define GRID_PAR_Y 11
 #define GRID_CELL_SPACING 4
 
+enum class MenuSelection : uint8_t {
+
+  NewGame,
+  ResetScores,
+
+};
 
 enum class GameState : uint8_t {
 
@@ -80,3 +74,4 @@ struct Cursor {
   uint8_t mode = 0;  
 
 };
+

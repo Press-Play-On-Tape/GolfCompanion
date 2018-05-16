@@ -16,15 +16,23 @@ Name name;
 uint8_t fadeWidth;
 uint16_t backdropx = 0;
 uint16_t backdropy = 0;
+MenuSelection menuSelection = MenuSelection::NewGame;
 
 
 Game game;
 
+bool flashCursor() {
+  return (arduboy.getFrameCount(64) < 32);
+}
 
 void setup() 
 {
-  arduboy.begin();
+  arduboy.boot();
+  arduboy.flashlight();
+  arduboy.systemButtons();
+  arduboy.initRandomSeed();
   arduboy.setFrameRate(60);
+
   name.clear();
   game.initEEPROM(false);
   game.loadEEPROM();
@@ -116,6 +124,8 @@ void numberPlayers()
   font4x6.print("How many players? ");
   font4x6.println(game.numberOfPlayers);
 
+  if (flashCursor()) { arduboy.drawLine(96, 37, 99, 37); }
+
   if (arduboy.justPressed(UP_BUTTON) && game.numberOfPlayers < 4)         
   { 
     ++game.numberOfPlayers;
@@ -151,11 +161,11 @@ void playerNames()
   for (uint8_t x = 0; x < NAME_LENGTH; x++) 
   {
 
-    font4x6.setCursor(95 + (x * NAME_CHARACTER_SPACING), 29);
+    font4x6.setCursor(82 + (x * NAME_CHARACTER_SPACING), 29);
 
-    if (name.getCharIndex() == x)
+    if (flashCursor() && name.getCharIndex() == x)
     {
-      arduboy.drawLine(95 + (x * NAME_CHARACTER_SPACING), 29 + 9, 95 + (x * NAME_CHARACTER_SPACING) + NAME_UNDERLINE_WIDTH, 29 + 9, WHITE);
+      arduboy.drawLine(82 + (x * NAME_CHARACTER_SPACING), 37, 82 + (x * NAME_CHARACTER_SPACING) + NAME_UNDERLINE_WIDTH, 37, WHITE);
     }
 
     font4x6.print(name.getChar(x));
@@ -258,12 +268,13 @@ void numberHoles()
   font4x6.setCursor(6, 29);
   font4x6.print("How many Holes? ");
   font4x6.println(game.numberOfHoles);
+  if (flashCursor()) { arduboy.drawLine(86, 37, (game.numberOfHoles < 10 ? 89 : 94), 37); }
 
   if (arduboy.justPressed(UP_BUTTON)&& game.numberOfHoles < 18)         
   { 
     ++game.numberOfHoles; 
   }
-  else if (arduboy.justPressed(DOWN_BUTTON)&& game.numberOfHoles > 1)   
+  else if (arduboy.justPressed(DOWN_BUTTON)&& game.numberOfHoles > 3)   
   { 
     --game.numberOfHoles; 
   }
@@ -392,11 +403,42 @@ void splashScreen()
   sprite.drawExternalMask(0, 0, signTitle, signTitleMask, 0,0);
   fadeIn();
 
+  switch (menuSelection) {
+
+    case MenuSelection::NewGame:
+      Sprites::drawErase(73, 47, cursor_mask, 0);
+      Sprites::drawSelfMasked(73, 47, cursor, 0);
+      break;
+
+    case MenuSelection::ResetScores:
+      Sprites::drawErase(73, 55, cursor_mask, 0);
+      Sprites::drawSelfMasked(73, 55, cursor, 0);
+      break;
+
+  }
+
+  if (arduboy.justPressed(UP_BUTTON)   && menuSelection == MenuSelection::ResetScores)   menuSelection = MenuSelection::NewGame;
+  if (arduboy.justPressed(DOWN_BUTTON) && menuSelection == MenuSelection::NewGame)       menuSelection = MenuSelection::ResetScores;
+
   // If 'A' button is pressed move to gameplay
-  if (arduboy.justPressed(A_BUTTON))
-  {
-    game.setState(GameState::NumberOfPlayers); 
-    resetFadeIn();
+  if (arduboy.justPressed(A_BUTTON)) {
+    
+    switch (menuSelection) {
+
+      case MenuSelection::NewGame:
+        game.clear(true);
+        game.setState(GameState::NumberOfPlayers); 
+        resetFadeIn();
+        break;
+
+      case MenuSelection::ResetScores:
+        game.clear(false);
+        game.setState(GameState::InGame_Init); 
+        resetFadeIn();
+        break;
+
+    }
+        
   }
 
 }
@@ -405,11 +447,13 @@ void splashScreen()
 void inGame()
 {
 
-  arduboy.drawBitmap(0, 0, scorecard, 128, 64, WHITE);
+//  arduboy.drawBitmap(0, 0, scorecard, 128, 64, WHITE);
+  Sprites::drawOverwrite(0, 0, scorecard, 0);
 
   font4x6.setCursor(1, GRID_PAR_Y + (1 * GRID_VERT_SPACING));
   font4x6.print(game.name1);
-    if (game.numberOfPlayers >= 2) 
+
+  if (game.numberOfPlayers >= 2) 
   {
     font4x6.setCursor(1, GRID_PAR_Y + (2 * GRID_VERT_SPACING));
     font4x6.print(game.name2);
@@ -429,31 +473,29 @@ void inGame()
 
   arduboy.drawHorizontalDottedLine(0, WIDTH, GRID_PAR_Y - 2, 2);
 
-  font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, 0);
+  font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING + (game.currentHoleNumber - 2 < 10 ? HALF_CHARACTER : 0), 0);
   font4x6.print(game.currentHoleNumber - 2);
-  font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, 0);
+  font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.currentHoleNumber - 1 < 10 ? HALF_CHARACTER : 0), 0);
   font4x6.print(game.currentHoleNumber - 1);
-  font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, 0);
+  font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.currentHoleNumber < 10 ? HALF_CHARACTER : 0), 0);
   font4x6.print(game.currentHoleNumber);
 
   font4x6.setTextColor(BLACK);
-  font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, GRID_PAR_Y);
+  font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 3].par < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y);
   font4x6.print(game.holes[game.currentHoleNumber - 3].par);
-  font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y);
+  font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 2].par < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y);
   font4x6.print(game.holes[game.currentHoleNumber - 2].par);
-  font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y);
+  font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 1].par < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y);
   font4x6.print(game.holes[game.currentHoleNumber - 1].par);  
   font4x6.setTextColor(WHITE); 
 
 
   // Player 1
-
-
-  font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, GRID_PAR_Y + (1 * GRID_VERT_SPACING));
+  font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 3].player1Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (1 * GRID_VERT_SPACING));
   font4x6.print(game.holes[game.currentHoleNumber - 3].player1Score);
-  font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (1 * GRID_VERT_SPACING));
+  font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 2].player1Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (1 * GRID_VERT_SPACING));
   font4x6.print(game.holes[game.currentHoleNumber - 2].player1Score);
-  font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (1 * GRID_VERT_SPACING));
+  font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 1].player1Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (1 * GRID_VERT_SPACING));
   font4x6.print(game.holes[game.currentHoleNumber - 1].player1Score);
   font4x6.setCursor(GRID_TOTAL_X + GRID_CELL_SPACING, GRID_PAR_Y + (1 * GRID_VERT_SPACING));
   font4x6.print(game.total.player1Score);
@@ -462,11 +504,11 @@ void inGame()
   //Player 2
   if (game.numberOfPlayers >= 2) 
   {
-    font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, GRID_PAR_Y + (2 * GRID_VERT_SPACING));
+    font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 3].player2Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (2 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 3].player2Score);
-    font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (2 * GRID_VERT_SPACING));
+    font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 2].player2Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (2 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 2].player2Score);
-    font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (2 * GRID_VERT_SPACING));
+    font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 1].player2Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (2 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 1].player2Score);
     font4x6.setCursor(GRID_TOTAL_X + GRID_CELL_SPACING, GRID_PAR_Y + (2 * GRID_VERT_SPACING));
     font4x6.print(game.total.player2Score);
@@ -475,11 +517,11 @@ void inGame()
   // Player 3
   if (game.numberOfPlayers >= 3) 
   {
-    font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, GRID_PAR_Y + (3 * GRID_VERT_SPACING));
+    font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 3].player3Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (3 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 3].player3Score);
-    font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (3 * GRID_VERT_SPACING));
+    font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 2].player3Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (3 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 2].player3Score);
-    font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (3 * GRID_VERT_SPACING));
+    font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 1].player3Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (3 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 1].player3Score);
     font4x6.setCursor(GRID_TOTAL_X + GRID_CELL_SPACING, GRID_PAR_Y + (3 * GRID_VERT_SPACING));
     font4x6.print(game.total.player3Score);
@@ -489,11 +531,11 @@ void inGame()
   // Player 4
   if (game.numberOfPlayers == 4)
   {    
-    font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING, GRID_PAR_Y + (4 * GRID_VERT_SPACING));
+    font4x6.setCursor(GRID_HOLE_1_X + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 3].player4Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (4 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 3].player4Score);
-    font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (4 * GRID_VERT_SPACING));
+    font4x6.setCursor(GRID_HOLE_1_X + (1 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 2].player4Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (4 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 2].player4Score);
-    font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING, GRID_PAR_Y + (4 * GRID_VERT_SPACING));
+    font4x6.setCursor(GRID_HOLE_1_X + (2 * GRID_HORZ_SPACING) + GRID_CELL_SPACING + (game.holes[game.currentHoleNumber - 1].player4Score < 10 ? HALF_CHARACTER : 0), GRID_PAR_Y + (4 * GRID_VERT_SPACING));
     font4x6.print(game.holes[game.currentHoleNumber - 1].player4Score);
     font4x6.setCursor(GRID_TOTAL_X + GRID_CELL_SPACING, GRID_PAR_Y + (4 * GRID_VERT_SPACING));
     font4x6.print(game.total.player4Score);
@@ -505,20 +547,33 @@ void inGame()
 
     case 0: // Move cursor around ..
       
-      arduboy.drawRect(GRID_HOLE_1_X + (game.cursor.x * GRID_HORZ_SPACING) + 1, GRID_PAR_Y + (1 * GRID_VERT_SPACING) + ((game.cursor.y - 1) * GRID_VERT_SPACING) - 1, (GRID_HORZ_SPACING - 1), (GRID_VERT_SPACING - 1));
+      if (game.cursor.y == 0) {
+        arduboy.drawRect(GRID_HOLE_1_X + (game.cursor.x * GRID_HORZ_SPACING) + 1, GRID_PAR_Y + (1 * GRID_VERT_SPACING) + ((game.cursor.y - 1) * GRID_VERT_SPACING) - 1, (GRID_HORZ_SPACING - 1), (GRID_VERT_SPACING - 2), BLACK );
+      }
+      else {
+        arduboy.drawRect(GRID_HOLE_1_X + (game.cursor.x * GRID_HORZ_SPACING) + 1, GRID_PAR_Y + (1 * GRID_VERT_SPACING) + ((game.cursor.y - 1) * GRID_VERT_SPACING) - 1, (GRID_HORZ_SPACING - 1), (GRID_VERT_SPACING - 1), WHITE );
+      }
 
-      if (arduboy.justPressed(UP_BUTTON) && game.cursor.y > 0) game.cursor.y--;
-      if (arduboy.justPressed(DOWN_BUTTON) && game.cursor.y < game.numberOfPlayers) game.cursor.y++;
+      if (arduboy.justPressed(UP_BUTTON) && game.cursor.y > 0) {
+        game.cursor.y--;
+        game.saveEEPROM();
+      }
 
-      if (arduboy.justPressed(LEFT_BUTTON))
-      {
+      if (arduboy.justPressed(DOWN_BUTTON) && game.cursor.y < game.numberOfPlayers) {
+        game.cursor.y++;
+        game.saveEEPROM();
+      }
+
+      if (arduboy.justPressed(LEFT_BUTTON)) {
         if (game.cursor.x > 0) {
           game.cursor.x--;
+          game.saveEEPROM();
         }
         else
         {
           if (game.currentHoleNumber > 3) {
             game.currentHoleNumber--;
+            game.saveEEPROM();
           }
           else
           {
@@ -532,12 +587,14 @@ void inGame()
       {
         if (game.cursor.x < 2) {
           game.cursor.x++;
+          game.saveEEPROM();
         }
         else
         {
           if (game.currentHoleNumber < game.numberOfHoles)
           {
             game.currentHoleNumber++;
+            game.saveEEPROM();
           }
           else
           {
@@ -546,13 +603,25 @@ void inGame()
         }
       }
 
-      if (arduboy.justPressed(A_BUTTON)) game.cursor.mode = 1;
+      if (arduboy.justPressed(A_BUTTON)) {
+        game.cursor.mode = 1;
+        game.saveEEPROM();
+      }
 
       break;
 
     case 1: // Change score ..
 
-      arduboy.drawLine(GRID_HOLE_1_X + (game.cursor.x * GRID_HORZ_SPACING) + 2, GRID_PAR_Y + (1 * GRID_VERT_SPACING) + (game.cursor.y * GRID_VERT_SPACING) - 3, GRID_HOLE_1_X + ((game.cursor.x + 1) * GRID_HORZ_SPACING) - 2, GRID_PAR_Y + (1 * GRID_VERT_SPACING) + (game.cursor.y * GRID_VERT_SPACING) - 3);
+      if (flashCursor()) { 
+
+        if (game.cursor.y == 0) {
+            arduboy.drawLine(GRID_HOLE_1_X + (game.cursor.x * GRID_HORZ_SPACING) + 2, GRID_PAR_Y + (1 * GRID_VERT_SPACING) + (game.cursor.y * GRID_VERT_SPACING) - 4, GRID_HOLE_1_X + ((game.cursor.x + 1) * GRID_HORZ_SPACING) - 2, GRID_PAR_Y + (1 * GRID_VERT_SPACING) + (game.cursor.y * GRID_VERT_SPACING) - 4, BLACK); 
+        }
+        else {
+            arduboy.drawLine(GRID_HOLE_1_X + (game.cursor.x * GRID_HORZ_SPACING) + 2, GRID_PAR_Y + (1 * GRID_VERT_SPACING) + (game.cursor.y * GRID_VERT_SPACING) - 3, GRID_HOLE_1_X + ((game.cursor.x + 1) * GRID_HORZ_SPACING) - 2, GRID_PAR_Y + (1 * GRID_VERT_SPACING) + (game.cursor.y * GRID_VERT_SPACING) - 3, WHITE);
+        }
+
+      } 
 
 
       // Hole Par ..
@@ -562,6 +631,7 @@ void inGame()
 
         uint8_t par = game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par;
         if (par <= 9) game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par++;
+        game.saveEEPROM();
 
       }
 
@@ -570,6 +640,7 @@ void inGame()
 
         uint8_t par = game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par;
         if (par > 1) game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par--;
+        game.saveEEPROM();
 
       }
 
@@ -587,6 +658,7 @@ void inGame()
 
           game.holes[game.currentHoleNumber - (3 - game.cursor.x)].setPlayerScore(game.cursor.y, playerScore + 1);
           game.total.setPlayerScore(game.cursor.y, totalScore + 1);
+          game.saveEEPROM();
 
         }
 
@@ -603,12 +675,16 @@ void inGame()
           
           game.holes[game.currentHoleNumber - (3 - game.cursor.x)].setPlayerScore(game.cursor.y, playerScore - 1);
           game.total.setPlayerScore(game.cursor.y, totalScore - 1);
+          game.saveEEPROM();
 
         }
 
       }
 
-      if (arduboy.justPressed(A_BUTTON)) game.cursor.mode = 0;
+      if (arduboy.justPressed(A_BUTTON)) {
+        game.cursor.mode = 0;
+        game.saveEEPROM();
+      }
 
       break;
 
@@ -618,33 +694,34 @@ void inGame()
 
 void finalScoreDisplay()
 {
+  game.determineWinners();
 
   font4x6.setCursor(0,0);
   font4x6.print("Here are the final scores");
   font4x6.setCursor(0,20);
-  font4x6.print(game.name1);
+  font4x6.print(game.getName(game.getOrder(1)));
   font4x6.setCursor(30,20);
-  font4x6.print(game.total.player1Score);
+  font4x6.print(game.getScore(game.getOrder(1)));
   if (game.numberOfPlayers >= 2) 
   {
     font4x6.setCursor(0,30);
-    font4x6.print(game.name2);
+    font4x6.print(game.getName(game.getOrder(2)));
     font4x6.setCursor(30,30);
-    font4x6.print(game.total.player2Score);
+    font4x6.print(game.getScore(game.getOrder(2)));
   }
   if (game.numberOfPlayers >= 3) 
   {
     font4x6.setCursor(0,40);
-    font4x6.print(game.name3);
+    font4x6.print(game.getName(game.getOrder(3)));
     font4x6.setCursor(30,40);
-    font4x6.print(game.total.player3Score);
+    font4x6.print(game.getScore(game.getOrder(3)));
   }
   if (game.numberOfPlayers >= 4) 
   {
     font4x6.setCursor(0,50);
-    font4x6.print(game.name4);
+    font4x6.print(game.getName(game.getOrder(4)));
     font4x6.setCursor(30,50);
-    font4x6.print(game.total.player4Score);
+    font4x6.print(game.getScore(game.getOrder(4)));
   }
 
   if (arduboy.justPressed(B_BUTTON)) game.setState(GameState::InGame);
