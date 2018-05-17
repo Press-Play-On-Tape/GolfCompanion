@@ -248,6 +248,12 @@ struct Game {
           holes[x].player4Score = 0;
         }
 
+        total.par = 72;
+        total.player1Score = 0;
+        total.player2Score = 0;
+        total.player3Score = 0;
+        total.player4Score = 0;
+
         numberOfPlayers = 1;
         playerBeingEdited = 1; 
 
