@@ -759,7 +759,7 @@ void finalScoreDisplay()
   font4x6.setCursor(2,0);
   font4x6.print("Par for this course is ");
   font4x6.print(game.total.par);
-  font4x6.setCursor(16,7);
+  font4x6.setCursor(18,7);
   font4x6.print("\nPlayer  Score   Par");
   font4x6.setCursor(16,26);
   font4x6.print(game.getName(game.getOrder(1)));
