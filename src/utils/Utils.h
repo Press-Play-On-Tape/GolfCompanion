@@ -9,6 +9,7 @@
 #define GRID_TOTAL_X 110
 #define GRID_PAR_Y 11
 #define GRID_CELL_SPACING 4
+#define KEY_REPEAT_DELAY 8
 
 enum class MenuSelection : uint8_t {
 
@@ -67,11 +68,18 @@ struct Hole {
 
 };
 
+enum class CursorMode : uint8_t {
+
+  Navigation,
+  Edit,
+
+};
+
 struct Cursor {
  
   uint8_t x = 0;
   uint8_t y = 0;
-  uint8_t mode = 0;  
+  CursorMode mode = CursorMode::Navigation;  
 
 };
 
