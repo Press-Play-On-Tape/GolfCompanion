@@ -9,6 +9,7 @@
 #define FONT4x6_HEIGHT 7
 
 #define CHAR_EXCLAMATION 33
+#define CHAR_MINUS 45
 #define CHAR_PERIOD 46
 #define CHAR_QUESTION_MARK 63
 #define CHAR_LETTER_A 65
@@ -22,6 +23,7 @@
   #define FONT_EXCLAMATION_INDEX 62
   #define FONT_PERIOD_INDEX 63
   #define FONT_QUESTION_INDEX 64
+  #define FONT_MINUS_INDEX 65
   #define FONT_NUMBER_INDEX 52
 #else
   #define FONT_EXCLAMATION_INDEX 36
@@ -99,6 +101,7 @@ const uint8_t PROGMEM font_images[] = {
 0x00,	0x2F,	0x00,	0x00,	//! 
 0x00,	0x20,	0x00,	0x00, //.
 0x02, 0x29, 0x05, 0x02, //?
+0x00, 0x04, 0x04, 0x00, //-
 };
 
 
@@ -157,6 +160,10 @@ void Font4x6::printChar(const char c, const int8_t x, int8_t y) {
       
     case CHAR_QUESTION_MARK:
       idx = FONT_QUESTION_INDEX;
+      break;
+      
+    case CHAR_MINUS:
+      idx = FONT_MINUS_INDEX;
       break;
 
   }

@@ -78,8 +78,6 @@ struct Game {
     *   memory range starting from byte EEPROM_STORAGE_SPACE_START.  If not found,
     *   it resets the settings ..
     */
-
-
     void initEEPROM(bool forceClear) {
 
       byte c1 = EEPROM.read(EEPROM_START_C1);
@@ -106,7 +104,7 @@ struct Game {
       EEPROM.update(EEPROM_CURRENT_HOLE, currentHoleNumber);
       EEPROM.update(EEPROM_CURSOR_X, cursor.x);
       EEPROM.update(EEPROM_CURSOR_Y, cursor.y);
-      EEPROM.update(EEPROM_CURSOR_MODE, cursor.mode);
+      EEPROM.update(EEPROM_CURSOR_MODE, static_cast<uint8_t>(cursor.mode));
 
       for (uint8_t x = 0; x < 18; x++) {
 
@@ -165,15 +163,25 @@ struct Game {
       currentHoleNumber = EEPROM.read(EEPROM_CURRENT_HOLE);
       cursor.x = EEPROM.read(EEPROM_CURSOR_X);
       cursor.y = EEPROM.read(EEPROM_CURSOR_Y);
-      cursor.mode = EEPROM.read(EEPROM_CURSOR_MODE);
+      cursor.mode = static_cast<CursorMode>(EEPROM.read(EEPROM_CURSOR_MODE));
 
-      for (uint8_t x = 0; x < 18; x++) {
+      for (uint8_t x = 0; x < numberOfHoles; x++) {
 
         holes[x].par = EEPROM.read(EEPROM_HOLES + (5 * x));
         holes[x].player1Score = EEPROM.read(EEPROM_HOLES + (5 * x) + 1);
         holes[x].player2Score = EEPROM.read(EEPROM_HOLES + (5 * x) + 2);
         holes[x].player3Score = EEPROM.read(EEPROM_HOLES + (5 * x) + 3);
         holes[x].player4Score = EEPROM.read(EEPROM_HOLES + (5 * x) + 4);
+        
+      }
+      
+      for (uint8_t x = numberOfHoles; x < 18; x++) {
+
+        holes[x].par = 0;
+        holes[x].player1Score = 0;
+        holes[x].player2Score = 0;
+        holes[x].player3Score = 0;
+        holes[x].player4Score = 0;
         
       }
 
@@ -217,27 +225,28 @@ struct Game {
 
     void clear(bool clearNames) {
 
-      numberOfHoles = 18;
       currentHoleNumber = 3;
       cursor.x = 0;
       cursor.y = 0;
-      cursor.mode = 0;
+      cursor.mode = CursorMode::Navigation;
 
-      for (uint8_t x = 0; x < 18; x++) {
-        holes[x].par = 4;
-        holes[x].player1Score = 0;
-        holes[x].player2Score = 0;
-        holes[x].player3Score = 0;
-        holes[x].player4Score = 0;
-      }
-
-      total.par = 4;
+      total.par = 0;
       total.player1Score = 0;
       total.player2Score = 0;
       total.player3Score = 0;
       total.player4Score = 0;
 
       if (clearNames) {
+
+        numberOfHoles = 18;
+
+        for (uint8_t x = 0; x < 18; x++) {
+          holes[x].par = 4;
+          holes[x].player1Score = 0;
+          holes[x].player2Score = 0;
+          holes[x].player3Score = 0;
+          holes[x].player4Score = 0;
+        }
 
         numberOfPlayers = 1;
         playerBeingEdited = 1; 
