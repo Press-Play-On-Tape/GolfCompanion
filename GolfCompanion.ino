@@ -751,43 +751,47 @@ void inGame()
 
 void finalScoreDisplay()
 {
-  game.determineWinners();
 
-  font4x6.setCursor(0,0);
-  font4x6.print("Here are the final scores\nPar for Game ");
+  game.determineWinners();
+  scrollingBackground();
+  sprite.drawExternalMask(0, 0, finalScore, finalScoreMask, 0,0);
+
+  font4x6.setCursor(2,0);
+  font4x6.print("Par for this course is ");
   font4x6.print(game.total.par);
+  font4x6.setCursor(16,7);
   font4x6.print("\nPlayer  Score   Par");
-  font4x6.setCursor(0,28);
+  font4x6.setCursor(16,26);
   font4x6.print(game.getName(game.getOrder(1)));
-  font4x6.setCursor(50,28);
+  font4x6.setCursor(66,26);
   font4x6.print(game.getScore(game.getOrder(1)));
-  font4x6.setCursor(90,28);
+  font4x6.setCursor(97,26);
   font4x6.print(game.getScore(game.getOrder(1))- game.total.par);
   if (game.numberOfPlayers >= 2) 
   {
-    font4x6.setCursor(0,38);
+    font4x6.setCursor(16,36);
     font4x6.print(game.getName(game.getOrder(2)));
-    font4x6.setCursor(50,38);
+    font4x6.setCursor(66,36);
     font4x6.print(game.getScore(game.getOrder(2)));
-    font4x6.setCursor(90,38);
+    font4x6.setCursor(97,36);
     font4x6.print(game.getScore(game.getOrder(2))- game.total.par);
   }
   if (game.numberOfPlayers >= 3) 
   {
-    font4x6.setCursor(0,48);
+    font4x6.setCursor(16,46);
     font4x6.print(game.getName(game.getOrder(3)));
-    font4x6.setCursor(50,48);
+    font4x6.setCursor(66,46);
     font4x6.print(game.getScore(game.getOrder(3)));
-    font4x6.setCursor(90,48);
+    font4x6.setCursor(97,46);
     font4x6.print(game.getScore(game.getOrder(3)) - game.total.par);
   }
   if (game.numberOfPlayers >= 4) 
   {
-    font4x6.setCursor(0,58);
+    font4x6.setCursor(16,56);
     font4x6.print(game.getName(game.getOrder(4)));
-    font4x6.setCursor(50,58);
+    font4x6.setCursor(66,56);
     font4x6.print(game.getScore(game.getOrder(4)));
-    font4x6.setCursor(90,58);
+    font4x6.setCursor(97,56);
     font4x6.print(game.getScore(game.getOrder(4)) - game.total.par);
   }
 
