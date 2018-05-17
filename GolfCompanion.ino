@@ -285,13 +285,13 @@ void numberHoles()
 
     if (arduboy.pressed(UP_BUTTON)&& game.numberOfHoles < 18)         
     { 
+      clearScoreDetails(game.numberOfHoles, 4);
       ++game.numberOfHoles; 
-      clearScoreDetails(game.numberOfHoles - 1, 4);
     }
     else if (arduboy.pressed(DOWN_BUTTON)&& game.numberOfHoles > 3)   
     { 
       --game.numberOfHoles; 
-      clearScoreDetails(game.numberOfHoles + 1, 0);
+      clearScoreDetails(game.numberOfHoles, 0);
     }
 
   }
@@ -328,6 +328,16 @@ void clearScoreDetails(uint8_t holeNumber, uint8_t par) {
     game.total.player2Score = game.total.player2Score + game.holes[x].player2Score;
     game.total.player3Score = game.total.player3Score + game.holes[x].player3Score;
     game.total.player4Score = game.total.player4Score + game.holes[x].player4Score;
+
+  }
+
+  for (uint8_t x = game.numberOfHoles; x < 18; x++) {
+  
+    game.holes[x].par = 0;
+    game.holes[x].player1Score = 0;
+    game.holes[x].player2Score = 0;
+    game.holes[x].player3Score = 0;
+    game.holes[x].player4Score = 0;
 
   }
 
@@ -662,8 +672,8 @@ void inGame()
 
 
       // Hole Par ..
-
-      if (arduboy.isFrameCount(KEY_REPEAT_DELAY)) {
+     
+      if (arduboy.isFrameCount(KEY_REPEAT_DELAY)) {   
 
         if (arduboy.pressed(UP_BUTTON) && game.cursor.y == 0)
         {
@@ -683,7 +693,7 @@ void inGame()
           uint8_t par = game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par;
           if (par > 1) {
             game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par--;
-            game.total.par++;
+            game.total.par--;
           }
           game.saveEEPROM();
 
