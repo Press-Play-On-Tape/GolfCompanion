@@ -492,13 +492,13 @@ void splashScreen()
   switch (menuSelection) {
 
     case MenuSelection::NewGame:
-      Sprites::drawErase(73, 47, cursor_mask, 0);
-      Sprites::drawSelfMasked(73, 47, cursor, 0);
+      Sprites::drawErase(90, 21, cursor_mask, 0);
+      Sprites::drawSelfMasked(90, 21, cursor, 0);
       break;
 
     case MenuSelection::ResetScores:
-      Sprites::drawErase(73, 55, cursor_mask, 0);
-      Sprites::drawSelfMasked(73, 55, cursor, 0);
+      Sprites::drawErase(90, 29, cursor_mask, 0);
+      Sprites::drawSelfMasked(90, 29, cursor, 0);
       break;
 
   }
@@ -791,6 +791,12 @@ void inGame()
 
   }
 
+}
+
+void creditScreen()
+{
+  arduboy.drawBitmap(0, 0, Credits, 128, 64, WHITE);
+  if (arduboy.justPressed(A_BUTTON)) game.setState(GameState::SplashScreen);
 }
 
 void finalScoreDisplay()
