@@ -22,27 +22,6 @@ template<typename T> T absT(const T & v) {
 }
 
 
-// ----------------------------------------------------------------------------
-//  Flash the cursor? 
-//
-bool flashCursor() {
-  return (arduboy.getFrameCount(64) < 32);
-}
-
-
-// ----------------------------------------------------------------------------
-//  Space pad a number of x digits .. 
-//
-void printPaddedNumber(uint8_t val, uint8_t digits) {
-
-  if (digits >= 4 && val < 1000)  font4x6.print(" ");
-  if (digits >= 3 && val < 100)   font4x6.print(" ");
-  if (digits >= 2 && val < 10)    font4x6.print(" ");
-  font4x6.print(val);
-
-}
-
-
 enum class MenuSelection : uint8_t {
 
   NewGame,
