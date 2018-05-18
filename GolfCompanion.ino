@@ -414,6 +414,10 @@ void loop()
       splashScreen();
       break;
 
+    case GameState::CreditScreen:
+      creditScreen();
+      break;
+
     case GameState::NumberOfPlayers:
       numberPlayers();
       break;
@@ -501,10 +505,18 @@ void splashScreen()
       Sprites::drawSelfMasked(90, 29, cursor, 0);
       break;
 
+    case MenuSelection::CreditScreen:
+      Sprites::drawErase(90, 37, cursor_mask, 0);
+      Sprites::drawSelfMasked(90, 37, cursor, 0);
+      break;
+
   }
 
-  if (arduboy.justPressed(UP_BUTTON)   && menuSelection == MenuSelection::ResetScores)   menuSelection = MenuSelection::NewGame;
-  if (arduboy.justPressed(DOWN_BUTTON) && menuSelection == MenuSelection::NewGame)       menuSelection = MenuSelection::ResetScores;
+  if (arduboy.justPressed(UP_BUTTON))
+    menuSelection = previousMenuSelection(menuSelection);
+    
+  if (arduboy.justPressed(DOWN_BUTTON))
+    menuSelection = nextMenuSelection(menuSelection);
 
   // If 'A' button is pressed move to gameplay
   if (arduboy.justPressed(A_BUTTON)) {
@@ -520,6 +532,12 @@ void splashScreen()
       case MenuSelection::ResetScores:
         game.clear(false);
         game.setState(GameState::InGame_Init); 
+        resetFadeIn();
+        break;
+
+      case MenuSelection::CreditScreen:
+        game.clear(false);
+        game.setState(GameState::CreditScreen); 
         resetFadeIn();
         break;
 

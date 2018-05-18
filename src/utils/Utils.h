@@ -26,20 +26,43 @@ enum class MenuSelection : uint8_t {
 
   NewGame,
   ResetScores,
+  CreditScreen,
 
 };
+
+constexpr const MenuSelection MenuSelectionFirst = MenuSelection::NewGame;
+constexpr const MenuSelection MenuSelectionLast = MenuSelection::CreditScreen;
+
+MenuSelection previousMenuSelection(MenuSelection selection)
+{
+	if(selection == MenuSelectionFirst)
+		return selection;
+		
+	const uint8_t value = static_cast<uint8_t>(selection);
+	return static_cast<MenuSelection>(value - 1);
+}
+
+MenuSelection nextMenuSelection(MenuSelection selection)
+{
+	if(selection == MenuSelectionLast)
+		return selection;
+	
+	const uint8_t value = static_cast<uint8_t>(selection);
+	return static_cast<MenuSelection>(value + 1);
+}
 
 enum class GameState : uint8_t {
 
   VSBoot,
   SplashScreen,
+  CreditScreen,
   NumberOfPlayers,
   PlayerNames_Init,
   PlayerNames,
   NumberOfHoles,
   InGame_Init,
   InGame,
-  FinalScore
+  FinalScore,
 
 };
 
