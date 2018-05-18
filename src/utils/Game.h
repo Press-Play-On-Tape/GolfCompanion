@@ -230,7 +230,6 @@ struct Game {
       cursor.y = 0;
       cursor.mode = CursorMode::Navigation;
 
-      total.par = 0;
       total.player1Score = 0;
       total.player2Score = 0;
       total.player3Score = 0;

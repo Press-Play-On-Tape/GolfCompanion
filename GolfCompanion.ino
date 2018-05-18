@@ -766,7 +766,11 @@ void finalScoreDisplay()
   font4x6.setCursor(66,26);
   font4x6.print(game.getScore(game.getOrder(1)));
   font4x6.setCursor(97,26);
-  font4x6.print(game.getScore(game.getOrder(1))- game.total.par);
+
+  uint8_t parPlayer1 = game.getOrder(1))- game.total.par;
+  font4x6.print((parPlayer1 >= 0 ? " ": ""));
+  font4x6.print(parPlayer1);
+
   if (game.numberOfPlayers >= 2) 
   {
     font4x6.setCursor(16,36);
@@ -774,7 +778,10 @@ void finalScoreDisplay()
     font4x6.setCursor(66,36);
     font4x6.print(game.getScore(game.getOrder(2)));
     font4x6.setCursor(97,36);
-    font4x6.print(game.getScore(game.getOrder(2))- game.total.par);
+
+    uint8_t parPlayer2 = game.getOrder(2))- game.total.par;
+    font4x6.print((parPlayer2 >= 0 ? " ": ""));
+    font4x6.print(parPlayer2);
   }
   if (game.numberOfPlayers >= 3) 
   {
@@ -783,7 +790,10 @@ void finalScoreDisplay()
     font4x6.setCursor(66,46);
     font4x6.print(game.getScore(game.getOrder(3)));
     font4x6.setCursor(97,46);
-    font4x6.print(game.getScore(game.getOrder(3)) - game.total.par);
+
+    uint8_t parPlayer3 = game.getOrder(3))- game.total.par;
+    font4x6.print((parPlayer3 >= 0 ? " ": ""));
+    font4x6.print(parPlayer3);
   }
   if (game.numberOfPlayers >= 4) 
   {
@@ -792,7 +802,11 @@ void finalScoreDisplay()
     font4x6.setCursor(66,56);
     font4x6.print(game.getScore(game.getOrder(4)));
     font4x6.setCursor(97,56);
-    font4x6.print(game.getScore(game.getOrder(4)) - game.total.par);
+    
+    uint8_t parPlayer4 = game.getOrder(4))- game.total.par;
+    font4x6.print((parPlayer4 >= 0 ? " ": ""));
+    font4x6.print(parPlayer4);
+
   }
 
   if (arduboy.justPressed(B_BUTTON)) game.setState(GameState::InGame);
