@@ -21,7 +21,9 @@ MenuSelection menuSelection = MenuSelection::NewGame;
 Game game;
 
 
-
+// ----------------------------------------------------------------------------
+//  Setup
+//
 void setup() {
 
   arduboy.boot();
@@ -34,6 +36,27 @@ void setup() {
   game.initEEPROM(false);
   game.loadEEPROM();
 
+}
+
+
+// ----------------------------------------------------------------------------
+//  Space pad a number of x digits .. 
+//
+void printPaddedNumber(uint8_t val, uint8_t digits) {
+
+  if (digits >= 4 && val < 1000)  font4x6.print(" ");
+  if (digits >= 3 && val < 100)   font4x6.print(" ");
+  if (digits >= 2 && val < 10)    font4x6.print(" ");
+  font4x6.print(val);
+
+}
+
+
+// ----------------------------------------------------------------------------
+//  Flash the cursor? 
+//
+bool flashCursor() {
+  return (arduboy.getFrameCount(64) < 32);
 }
 
 
