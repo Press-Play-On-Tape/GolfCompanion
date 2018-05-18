@@ -804,7 +804,7 @@ void finalScoreDisplay()
   font4x6.print("Par~for~this~course~is ");
   font4x6.print(game.total.par);
   font4x6.setCursor(18,7);
-  font4x6.print("\nPlayer   Score  Par");
+  //font4x6.print("\nPlayer   Score  Par");
   font4x6.setCursor(18,26);
 
   int8_t scorePlayer1 = game.getScore(game.getOrder(1));
@@ -821,11 +821,11 @@ void finalScoreDisplay()
     int8_t scorePlayer2 = game.getScore(game.getOrder(2));
     int8_t parPlayer2 = scorePlayer2 - game.total.par;
 
-    font4x6.setCursor(18,36);
+    font4x6.setCursor(18,35);
     font4x6.print(game.getName(game.getOrder(2)));
-    font4x6.setCursor(66,36);
+    font4x6.setCursor(66,35);
     printPaddedNumber(scorePlayer2, 3);
-    font4x6.setCursor(97,36);
+    font4x6.setCursor(97,35);
     font4x6.print(parPlayer2 >= 0 ? " ": "-");
     printPaddedNumber(absT(parPlayer2), 2);
   }
@@ -835,11 +835,11 @@ void finalScoreDisplay()
     int8_t scorePlayer3 = game.getScore(game.getOrder(3));
     int8_t parPlayer3 = scorePlayer3 - game.total.par;
 
-    font4x6.setCursor(18,46);
+    font4x6.setCursor(18,44);
     font4x6.print(game.getName(game.getOrder(3)));
-    font4x6.setCursor(66,46);
+    font4x6.setCursor(66,44);
     printPaddedNumber(scorePlayer3, 3);
-    font4x6.setCursor(97,46);
+    font4x6.setCursor(97,44);
     font4x6.print(parPlayer3 >= 0 ? " ": "-");
     printPaddedNumber(absT(parPlayer3), 2);
   }
@@ -849,11 +849,11 @@ void finalScoreDisplay()
     int8_t scorePlayer4 = game.getScore(game.getOrder(4));
     int8_t parPlayer4 = scorePlayer4 - game.total.par;
 
-    font4x6.setCursor(18,56);
+    font4x6.setCursor(18,53);
     font4x6.print(game.getName(game.getOrder(4)));
-    font4x6.setCursor(66,56);
+    font4x6.setCursor(66,53);
     printPaddedNumber(scorePlayer4, 3);
-    font4x6.setCursor(97,56);
+    font4x6.setCursor(97,53);
     font4x6.print(parPlayer4 >= 0 ? " ": "-");
     printPaddedNumber(absT(parPlayer4), 2);
 
