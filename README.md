@@ -7,4 +7,4 @@ Idea, graphic and basic coding : Vampirics
 More advanced coding : Filmote
 
 
-![Screenshot](/Images/GolfCompanionCapture.png)
+![Screenshot](/Images/GolfCompanionTitle.png)
