@@ -634,32 +634,37 @@ void inGame()
       
       arduboy.drawRect(GRID_HOLE_1_X + (game.cursor.x * GRID_HORZ_SPACING) + 1, GRID_PAR_Y + (1 * GRID_VERT_SPACING) + ((game.cursor.y - 1) * GRID_VERT_SPACING) - 1, (GRID_HORZ_SPACING - 1), (GRID_VERT_SPACING - 1), (game.cursor.y == 0 ? BLACK : WHITE));
 
-      if (arduboy.isFrameCount(KEY_REPEAT_DELAY)) {
+      if (arduboy.justPressed(UP_BUTTON) || arduboy.justPressed(DOWN_BUTTON) || arduboy.justPressed(LEFT_BUTTON) || arduboy.justPressed(RIGHT_BUTTON) || arduboy.isFrameCount(KEY_REPEAT_DELAY, frameCount)) {
 
         if (arduboy.pressed(UP_BUTTON) && game.cursor.y > 0) {
           game.cursor.y--;
           game.saveEEPROM();
+          frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
         }
 
         if (arduboy.pressed(DOWN_BUTTON) && game.cursor.y < game.numberOfPlayers) {
           game.cursor.y++;
           game.saveEEPROM();
+          frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
         }
 
         if (arduboy.pressed(LEFT_BUTTON)) {
           if (game.cursor.x > 0) {
             game.cursor.x--;
             game.saveEEPROM();
+            frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
           }
           else
           {
             if (game.currentHoleNumber > 3) {
               game.currentHoleNumber--;
               game.saveEEPROM();
+              frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
             }
             else
             {
               game.setState(GameState::NumberOfHoles);
+              frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
             }
           }
         }
@@ -669,6 +674,7 @@ void inGame()
           if (game.cursor.x < 2) {
             game.cursor.x++;
             game.saveEEPROM();
+            frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
           }
           else
           {
@@ -676,10 +682,12 @@ void inGame()
             {
               game.currentHoleNumber++;
               game.saveEEPROM();
+              frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
             }
             else
             {
               game.setState(GameState::FinalScore);
+              frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
             }
           }
         }
