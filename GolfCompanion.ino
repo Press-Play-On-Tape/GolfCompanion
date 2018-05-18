@@ -813,7 +813,8 @@ void inGame()
 
 void creditScreen()
 {
-  arduboy.drawBitmap(0, 0, Credits, 128, 64, WHITE);
+  scrollingBackground();
+  sprite.drawExternalMask(0, 0, Credits, CreditsMask, 0,0);
   if (arduboy.justPressed(A_BUTTON)) game.setState(GameState::SplashScreen);
 }
 
@@ -824,9 +825,11 @@ void finalScoreDisplay()
   scrollingBackground();
   sprite.drawExternalMask(0, 0, finalScore, finalScoreMask, 0,0);
 
+  font4x6.setTextColor(BLACK);
   font4x6.setCursor(2,0);
   font4x6.print("Par~for~this~course~is ");
   font4x6.print(game.total.par);
+  font4x6.setTextColor(WHITE);
   font4x6.setCursor(18,7);
   //font4x6.print("\nPlayer   Score  Par");
   font4x6.setCursor(18,26);
