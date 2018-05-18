@@ -32,9 +32,15 @@ uint8_t Arduboy2Ext::getFrameCount(uint8_t mod) const {
 
 }
 
-uint8_t Arduboy2Ext::isFrameCount(uint8_t mod) const {
+bool Arduboy2Ext::isFrameCount(uint8_t mod) const {
 
   return (frameCount % mod) == 0;
+
+}
+
+bool Arduboy2Ext::isFrameCount(uint8_t mod, uint8_t val) const {
+
+  return (frameCount % mod) == val;
 
 }
 
