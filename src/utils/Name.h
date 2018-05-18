@@ -77,7 +77,7 @@ void Name::setChar(uint8_t idx, uint8_t val) {
 
 void Name::setChars(char val[NAME_LENGTH]) {
   _charIndex = 0;
-  memcpy(_chars, val, 4);
+  memcpy(_chars, val, NAME_LENGTH);
 }
 
 

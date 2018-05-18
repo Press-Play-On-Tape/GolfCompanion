@@ -9,7 +9,16 @@
 #define GRID_TOTAL_X 110
 #define GRID_PAR_Y 11
 #define GRID_CELL_SPACING 4
-#define KEY_REPEAT_DELAY 8
+#define KEY_REPEAT_DELAY 12
+
+// ----------------------------------------------------------------------------
+//  A better absolute as it uses less memory than the standard one .. 
+//
+template<typename T> T absT(const T & v) {
+  
+  return (v < 0) ? -v : v;
+
+}
 
 enum class MenuSelection : uint8_t {
 

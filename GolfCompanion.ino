@@ -14,19 +14,16 @@ Name name;
 
 //globals
 uint8_t fadeWidth;
+uint8_t frameCount = 0; 
 uint16_t backdropx = 0;
 uint16_t backdropy = 0;
 MenuSelection menuSelection = MenuSelection::NewGame;
-
-
 Game game;
 
-bool flashCursor() {
-  return (arduboy.getFrameCount(64) < 32);
-}
 
-void setup() 
-{
+
+void setup() {
+
   arduboy.boot();
   arduboy.flashlight();
   arduboy.systemButtons();
@@ -36,22 +33,29 @@ void setup()
   name.clear();
   game.initEEPROM(false);
   game.loadEEPROM();
+
 }
 
-void resetFade() 
-{
+
+// ----------------------------------------------------------------------------
+//  Reset the fade effect .. 
+//
+void resetFade() {
   fadeWidth = 0;
 }
 
-// Resets the fade in effect
-void resetFadeIn() 
-{
+// ----------------------------------------------------------------------------
+//  Reset the fade in effect .. 
+//
+void resetFadeIn() {
   fadeWidth = WIDTH;
 }
 
-// fade in function
-bool fadeIn() 
-{
+
+// ----------------------------------------------------------------------------
+//  Fade In function .. 
+//
+bool fadeIn() {
 
   for (uint8_t i = 0; i < (HEIGHT / 2); ++i)
   {
@@ -72,7 +76,10 @@ bool fadeIn()
 
 }
 
-// fade out function
+
+// ----------------------------------------------------------------------------
+//  Fade Out function .. 
+//
 bool fadeOut() 
 {
 
@@ -126,20 +133,22 @@ void numberPlayers()
 
   if (flashCursor()) { arduboy.drawLine(96, 37, 99, 37); }
 
-  if (arduboy.isFrameCount(KEY_REPEAT_DELAY)) {
+  if (arduboy.justPressed(UP_BUTTON) || arduboy.justPressed(DOWN_BUTTON) || arduboy.isFrameCount(KEY_REPEAT_DELAY, frameCount)) {
 
     if (arduboy.pressed(UP_BUTTON) && game.numberOfPlayers < 4)         
     { 
       ++game.numberOfPlayers;
+      frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
     }
     else if (arduboy.pressed(DOWN_BUTTON)&& game.numberOfPlayers > 1)   
     { 
       --game.numberOfPlayers; 
+      frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
     }
 
   }
-
-  else if (arduboy.justPressed(A_BUTTON))                                 
+  
+  if (arduboy.justPressed(A_BUTTON))                                 
   { 
     game.setState(GameState::PlayerNames_Init); 
   }
@@ -182,40 +191,36 @@ void playerNames()
 
   uint8_t charIndex = name.getCharIndex();
 
-  if (arduboy.isFrameCount(KEY_REPEAT_DELAY)) {
+  if (arduboy.justPressed(UP_BUTTON) || arduboy.justPressed(DOWN_BUTTON) || arduboy.isFrameCount(KEY_REPEAT_DELAY, frameCount)) {
 
-    if (arduboy.pressed(UP_BUTTON))       
-    { 
+    if (arduboy.pressed(UP_BUTTON)) { 
       name.incChar(charIndex); 
+      frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
     }
-    if (arduboy.pressed(DOWN_BUTTON))     
-    { 
+    if (arduboy.pressed(DOWN_BUTTON)) { 
       name.decChar(charIndex); 
+      frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
     }
-
+    
   }
-
+  
   if (arduboy.justPressed(LEFT_BUTTON))     
   { 
     name.decCharIndex(); 
   } 
-  if (arduboy.justPressed(RIGHT_BUTTON))    
+  else if (arduboy.justPressed(RIGHT_BUTTON))    
   { 
     name.incCharIndex(); 
   } 
+  else if (arduboy.justPressed(B_BUTTON)) { 
 
-  if (arduboy.justPressed(B_BUTTON))        
-  { 
-
-    if (game.playerBeingEdited > 1) 
-    {
+    if (game.playerBeingEdited > 1) {
 
       game.setState(GameState::PlayerNames_Init);
       game.playerBeingEdited--;
 
     }
-    else 
-    {
+    else {
 
       game.setState(GameState::NumberOfPlayers);
 
@@ -281,22 +286,25 @@ void numberHoles()
 
   if (flashCursor()) { arduboy.drawLine(86, 37, (game.numberOfHoles < 10 ? 89 : 94), 37); }
 
-  if (arduboy.isFrameCount(KEY_REPEAT_DELAY)) {
+  if (arduboy.justPressed(UP_BUTTON) || arduboy.justPressed(DOWN_BUTTON) || arduboy.isFrameCount(KEY_REPEAT_DELAY, frameCount)) {
 
-    if (arduboy.pressed(UP_BUTTON)&& game.numberOfHoles < 18)         
+    if (arduboy.pressed(UP_BUTTON) && game.numberOfHoles < 18)         
     { 
       clearScoreDetails(game.numberOfHoles, 4);
       ++game.numberOfHoles; 
+      frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
     }
-    else if (arduboy.pressed(DOWN_BUTTON)&& game.numberOfHoles > 3)   
+    else if (arduboy.pressed(DOWN_BUTTON) && game.numberOfHoles > 3)   
     { 
       --game.numberOfHoles; 
       clearScoreDetails(game.numberOfHoles, 0);
+      if (game.numberOfHoles < game.currentHoleNumber) game.currentHoleNumber--;
+      frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
     }
 
   }
-
-  else if (arduboy.justPressed(A_BUTTON))                               
+  
+  if (arduboy.justPressed(A_BUTTON))                               
   { 
     game.setState(GameState::InGame_Init); 
   }
@@ -660,6 +668,10 @@ void inGame()
         game.saveEEPROM();
       }
 
+      if (arduboy.justPressed(B_BUTTON)) {
+        game.setState(GameState::NumberOfHoles);
+      }
+
       break;
 
     case CursorMode::Edit: // Change score ..
@@ -673,7 +685,7 @@ void inGame()
 
       // Hole Par ..
      
-      if (arduboy.isFrameCount(KEY_REPEAT_DELAY)) {   
+      if (arduboy.justPressed(UP_BUTTON) || arduboy.justPressed(DOWN_BUTTON) || arduboy.isFrameCount(KEY_REPEAT_DELAY, frameCount)) {   
 
         if (arduboy.pressed(UP_BUTTON) && game.cursor.y == 0)
         {
@@ -682,8 +694,9 @@ void inGame()
           if (par <= 9) {
             game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par++;
             game.total.par++;
+            game.saveEEPROM();
           }
-          game.saveEEPROM();
+          frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
 
         }
 
@@ -694,8 +707,9 @@ void inGame()
           if (par > 1) {
             game.holes[game.currentHoleNumber - (3 - game.cursor.x)].par--;
             game.total.par--;
+            game.saveEEPROM();
           }
-          game.saveEEPROM();
+          frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
 
         }
 
@@ -708,14 +722,12 @@ void inGame()
           uint8_t playerScore = game.holes[game.currentHoleNumber - (3 - game.cursor.x)].getPlayerScore(game.cursor.y);
           uint8_t totalScore = game.total.getPlayerScore(game.cursor.y);
 
-          if (playerScore <= 9)
-          {
-
+          if (playerScore <= 9) {
             game.holes[game.currentHoleNumber - (3 - game.cursor.x)].setPlayerScore(game.cursor.y, playerScore + 1);
             game.total.setPlayerScore(game.cursor.y, totalScore + 1);
             game.saveEEPROM();
-
           }
+          frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
 
         }
 
@@ -733,11 +745,12 @@ void inGame()
             game.saveEEPROM();
 
           }
+          frameCount = arduboy.getFrameCount(KEY_REPEAT_DELAY);
 
         }
 
       }
-
+      
       if (arduboy.justPressed(A_BUTTON)) {
         game.cursor.mode = CursorMode::Navigation;
         game.saveEEPROM();
@@ -757,45 +770,66 @@ void finalScoreDisplay()
   sprite.drawExternalMask(0, 0, finalScore, finalScoreMask, 0,0);
 
   font4x6.setCursor(2,0);
-  font4x6.print("Par for this course is ");
+  font4x6.print("Par~for~this~course~is ");
   font4x6.print(game.total.par);
   font4x6.setCursor(18,7);
-  font4x6.print("\nPlayer  Score   Par");
-  font4x6.setCursor(16,26);
+  font4x6.print("\nPlayer   Score  Par");
+  font4x6.setCursor(18,26);
+
+  int8_t scorePlayer1 = game.getScore(game.getOrder(1));
+  int8_t parPlayer1 = scorePlayer1 - game.total.par;
   font4x6.print(game.getName(game.getOrder(1)));
   font4x6.setCursor(66,26);
-  font4x6.print(game.getScore(game.getOrder(1)));
+  printPaddedNumber(scorePlayer1, 3);
   font4x6.setCursor(97,26);
-  font4x6.print(game.getScore(game.getOrder(1))- game.total.par);
+  font4x6.print(parPlayer1 >= 0 ? " ": "-");
+  printPaddedNumber(absT(parPlayer1), 2);
+
   if (game.numberOfPlayers >= 2) 
   {
-    font4x6.setCursor(16,36);
+    int8_t scorePlayer2 = game.getScore(game.getOrder(2));
+    int8_t parPlayer2 = scorePlayer2 - game.total.par;
+
+    font4x6.setCursor(18,36);
     font4x6.print(game.getName(game.getOrder(2)));
     font4x6.setCursor(66,36);
-    font4x6.print(game.getScore(game.getOrder(2)));
+    printPaddedNumber(scorePlayer2, 3);
     font4x6.setCursor(97,36);
-    font4x6.print(game.getScore(game.getOrder(2))- game.total.par);
+    font4x6.print(parPlayer2 >= 0 ? " ": "-");
+    printPaddedNumber(absT(parPlayer2), 2);
   }
+
   if (game.numberOfPlayers >= 3) 
   {
-    font4x6.setCursor(16,46);
+    int8_t scorePlayer3 = game.getScore(game.getOrder(3));
+    int8_t parPlayer3 = scorePlayer3 - game.total.par;
+
+    font4x6.setCursor(18,46);
     font4x6.print(game.getName(game.getOrder(3)));
     font4x6.setCursor(66,46);
-    font4x6.print(game.getScore(game.getOrder(3)));
+    printPaddedNumber(scorePlayer3, 3);
     font4x6.setCursor(97,46);
-    font4x6.print(game.getScore(game.getOrder(3)) - game.total.par);
+    font4x6.print(parPlayer3 >= 0 ? " ": "-");
+    printPaddedNumber(absT(parPlayer3), 2);
   }
+
   if (game.numberOfPlayers >= 4) 
   {
-    font4x6.setCursor(16,56);
+    int8_t scorePlayer4 = game.getScore(game.getOrder(4));
+    int8_t parPlayer4 = scorePlayer4 - game.total.par;
+
+    font4x6.setCursor(18,56);
     font4x6.print(game.getName(game.getOrder(4)));
     font4x6.setCursor(66,56);
-    font4x6.print(game.getScore(game.getOrder(4)));
+    printPaddedNumber(scorePlayer4, 3);
     font4x6.setCursor(97,56);
-    font4x6.print(game.getScore(game.getOrder(4)) - game.total.par);
+    font4x6.print(parPlayer4 >= 0 ? " ": "-");
+    printPaddedNumber(absT(parPlayer4), 2);
+
   }
 
   if (arduboy.justPressed(B_BUTTON)) game.setState(GameState::InGame);
   if (arduboy.justPressed(A_BUTTON)) game.setState(GameState::SplashScreen);
 
 }
+

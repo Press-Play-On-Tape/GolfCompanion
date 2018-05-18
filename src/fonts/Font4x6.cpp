@@ -6,6 +6,7 @@
 #define USE_LOWER_CASE
 
 #define FONT4x6_WIDTH 4
+#define FONT4x6_WIDTH_NARROW 3
 #define FONT4x6_HEIGHT 7
 
 #define CHAR_EXCLAMATION 33
@@ -66,7 +67,7 @@ const uint8_t PROGMEM font_images[] = {
 0x1C,	0x22,	0x22,	0x14,	
 0x18,	0x24,	0x24,	0x3F,	
 0x1C,	0x2A,	0x2A,	0x2C,	
-0x04,	0x7E,	0x05,	0x01,	
+0x04,	0x3E,	0x05,	0x01,	
 0x4C,	0x52,	0x52,	0x3E,	
 0x3F,	0x04,	0x04,	0x38,	
 0x24,	0x3D,	0x20,	0x00,	
@@ -118,6 +119,7 @@ Font4x6::Font4x6(uint8_t lineSpacing) {
 size_t Font4x6::write(uint8_t c) {
 
   if (c == '\n')      { _cursorX = _baseX; _cursorY += _lineHeight; }
+  else if (c == '~')  { _cursorX += FONT4x6_WIDTH_NARROW; }
   else {
 
     printChar(c, _cursorX, _cursorY);

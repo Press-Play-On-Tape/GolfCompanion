@@ -223,20 +223,19 @@ struct Game {
 
     }
 
-    void clear(bool clearNames) {
+    void clear(bool reset) {
 
       currentHoleNumber = 3;
       cursor.x = 0;
       cursor.y = 0;
       cursor.mode = CursorMode::Navigation;
 
-      total.par = 0;
       total.player1Score = 0;
       total.player2Score = 0;
       total.player3Score = 0;
       total.player4Score = 0;
 
-      if (clearNames) {
+      if (reset) {
 
         numberOfHoles = 18;
 
@@ -264,6 +263,34 @@ struct Game {
           name4[x] = ' ';
         }
 
+      }
+      else {
+
+        for (uint8_t x = 0; x < numberOfHoles; x++) {
+          holes[x].player1Score = 0;
+          holes[x].player2Score = 0;
+          holes[x].player3Score = 0;
+          holes[x].player4Score = 0;
+        }
+
+        for (uint8_t x = numberOfHoles; x < 18; x++) {
+          holes[x].par = 0;
+          holes[x].player1Score = 0;
+          holes[x].player2Score = 0;
+          holes[x].player3Score = 0;
+          holes[x].player4Score = 0;
+        }
+
+        total.par = 0;
+        total.player1Score = 0;
+        total.player2Score = 0;
+        total.player3Score = 0;
+        total.player4Score = 0;
+
+        for (uint8_t x = 0; x < numberOfHoles; x++) {
+          total.par = total.par + holes[x].par;
+        }
+        
       }
 
     }
