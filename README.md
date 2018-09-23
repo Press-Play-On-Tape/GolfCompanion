@@ -1,4 +1,4 @@
-<img src="/distributable/SplashScreen.png" data-canonical-src="/distributable/SplashScreen.png" width="600" height="307" />
+<img src="/distributable/SplashScreen.jpg" data-canonical-src="/distributable/SplashScreen.jpg" width="600" height="307" />
 
 
 # Golf-Companion
@@ -10,8 +10,8 @@ Idea, graphic and basic coding : Vampirics
 More advanced coding : Filmote
 
 
-![Screenshot](/Images/GolfCompanionTitle.png)
 
+## Details
 
 With the summer weather in my part of the world i have been thinking about how could we use the Arduboy outside? What about using it to keep my Golf scores?
 
