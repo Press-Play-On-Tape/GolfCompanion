@@ -42,16 +42,9 @@ A. when you scroll passed the amount of holes you are playing, it will get you t
 
 Some screenshots:
 
-### Main Screen
-<img src="/distributable/Screen_01.png" data-canonical-src="/distributable/Screen_01.png" width="512" height="256" />
+### Main Screen&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name Entry Screen
+<img src="/distributable/Screen_01.png" data-canonical-src="/distributable/Screen_01.png" width="320" height="160" />&nbsp;&nbsp;<img src="/distributable/Screen_02.png" data-canonical-src="/distributable/Screen_02.png" width="320" height="160" />
 
-
-### Name Entry Screen
-<img src="/distributable/Screen_02.png" data-canonical-src="/distributable/Screen_02.png" width="512" height="256" />
-
-### Score Card Screen
-<img src="/distributable/Screen_03.png" data-canonical-src="/distributable/Screen_03.png" width="512" height="256" />
-
-### Final Scoring Screen
-<img src="/distributable/Screen_04.png" data-canonical-src="/distributable/Screen_04.png" width="512" height="256" />
+### Score Card Screen&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Final Scoring Screen
+<img src="/distributable/Screen_03.png" data-canonical-src="/distributable/Screen_03.png" width="320" height="160" />&nbsp;&nbsp;<img src="/distributable/Screen_04.png" data-canonical-src="/distributable/Screen_04.png" width="320" height="160" />
 
