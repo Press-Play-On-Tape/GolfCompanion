@@ -52,7 +52,7 @@ struct Game {
 
   private:
 
-    GameState _state = GameState::VSBoot;
+    GameState _state = GameState::PPOT_Init;
     uint8_t order[4] = { 1, 2, 3, 4 };
 
 

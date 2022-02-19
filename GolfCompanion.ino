@@ -405,10 +405,18 @@ void loop()
 
   switch (game.getState())
   {
-
-    case GameState::VSBoot:
-      vsBoot();
+    
+    case GameState::PPOT_Init:
+      ppot_Init();
       break;
+    
+    case GameState::PPOT:
+      ppot();
+      break;
+      
+    // case GameState::VSBoot:
+    //   vsBoot();
+    //   break;
 
     case GameState::SplashScreen:
       splashScreen();

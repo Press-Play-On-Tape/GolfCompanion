@@ -53,7 +53,7 @@ MenuSelection nextMenuSelection(MenuSelection selection)
 
 enum class GameState : uint8_t {
 
-  VSBoot,
+  // VSBoot,
   SplashScreen,
   CreditScreen,
   NumberOfPlayers,
@@ -63,6 +63,8 @@ enum class GameState : uint8_t {
   InGame_Init,
   InGame,
   FinalScore,
+  PPOT_Init,
+  PPOT,
 
 };
 
