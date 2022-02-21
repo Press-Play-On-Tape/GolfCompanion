@@ -1,5 +1,6 @@
 {
-    "board": "arduino:avr:leonardo",
+    "board": "arduboy-homemade:avr:arduboy-homemade",
     "output": "../build",
-    "sketch": "GolfCompanion.ino"
+    "sketch": "GolfCompanion.ino",
+    "configuration": "based_on=leonardo,boot=org,core=arduboy-core,display=sh1106,flashselect=sda,contrast=normal"
 }
