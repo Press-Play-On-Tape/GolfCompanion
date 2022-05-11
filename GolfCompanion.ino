@@ -128,7 +128,7 @@ bool fadeOut()
 
 void drawBottomGrass()
 {
-  sprite.drawExternalMask(0, 46, grasstee, grassteemask, 0, 0);
+  sprite.drawPlusMask(0, 46, grasstee, 0);
 }
 
 void drawPopWindow()
@@ -140,7 +140,7 @@ void drawPopWindow()
 
 void drawHeader()
 {
-  sprite.drawExternalMask(15, 2, GolfCompanionHeader, GolfCompanionHeadermask, 0,0);
+  sprite.drawPlusMask(15, 2, GolfCompanionHeader, 0);
 }
 
 void numberPlayers()
@@ -378,8 +378,8 @@ void clearScoreDetails(uint8_t holeNumber, uint8_t par) {
 void scrollingBackground()
 {
 
-  arduboy.drawBitmap(backdropx, backdropy, GolfBackground, 128, 64, WHITE);
-  arduboy.drawBitmap(backdropx + 128, backdropy, GolfBackground, 128, 64, WHITE);
+  Sprites::drawOverwrite(backdropx, backdropy, GolfBackground, 0);
+  Sprites::drawOverwrite(backdropx + 128, backdropy, GolfBackground, 0);
 
   if(arduboy.everyXFrames(5))
   { // when running at 60fps
@@ -481,24 +481,21 @@ void splashScreen()
 
   scrollingBackground();
   drawBottomGrass();
-  sprite.drawExternalMask(0, 0, signTitle, signTitleMask, 0,0);
+  sprite.drawPlusMask(0, 0, signTitle, 0);
   fadeIn();
 
   switch (menuSelection) {
 
     case MenuSelection::NewGame:
-      Sprites::drawErase(90, 21, cursor_mask, 0);
-      Sprites::drawSelfMasked(90, 21, cursor, 0);
+      Sprites::drawPlusMask(90, 21, cursor, 0);
       break;
 
     case MenuSelection::ResetScores:
-      Sprites::drawErase(90, 29, cursor_mask, 0);
-      Sprites::drawSelfMasked(90, 29, cursor, 0);
+      Sprites::drawPlusMask(90, 29, cursor, 0);
       break;
 
     case MenuSelection::CreditScreen:
-      Sprites::drawErase(90, 37, cursor_mask, 0);
-      Sprites::drawSelfMasked(90, 37, cursor, 0);
+      Sprites::drawPlusMask(90, 37, cursor, 0);
       break;
 
   }
@@ -805,7 +802,7 @@ void inGame()
 void creditScreen()
 {
   scrollingBackground();
-  sprite.drawExternalMask(0, 0, Credits, CreditsMask, 0,0);
+  sprite.drawPlusMask(0, 0, Credits, 0);
   if (arduboy.justPressed(A_BUTTON)) game.setState(GameState::SplashScreen);
 }
 
@@ -814,7 +811,7 @@ void finalScoreDisplay()
 
   game.determineWinners();
   scrollingBackground();
-  sprite.drawExternalMask(0, 0, finalScore, finalScoreMask, 0,0);
+  sprite.drawPlusMask(0, 0, finalScore, 0);
 
   font4x6.setTextColor(BLACK);
   font4x6.setCursor(2,0);
