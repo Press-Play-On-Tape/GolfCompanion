@@ -413,10 +413,6 @@ void loop()
     case GameState::PPOT:
       ppot();
       break;
-      
-    // case GameState::VSBoot:
-    //   vsBoot();
-    //   break;
 
     case GameState::SplashScreen:
       splashScreen();
@@ -479,19 +475,6 @@ void loop()
   arduboy.display();
 }
 
-void vsBoot()
-{
-
-  // Vsoft logo display
-  arduboy.drawBitmap(0, 0, bootlogo, 128, 64, WHITE);
-
-  if (fadeOut())
-  {
-    resetFade();
-    resetFadeIn();
-    game.setState(GameState::SplashScreen);
-  }
-}
 
 void splashScreen()
 {

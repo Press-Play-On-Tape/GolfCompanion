@@ -16,7 +16,6 @@
 
 enum class GameState : uint8_t {
 
-  VSBoot,
   SplashScreen,
   NumberOfPlayers,
   PlayerNames_Init,
